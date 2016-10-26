@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import com.vincent.filepicker.Constant;
 import com.vincent.filepicker.activity.AudioPickActivity;
@@ -14,6 +15,7 @@ import com.vincent.filepicker.activity.VideoPickActivity;
 import com.vincent.filepicker.filter.FileFilter;
 import com.vincent.filepicker.filter.callback.FilterResultCallback;
 import com.vincent.filepicker.filter.entity.AudioFile;
+import com.vincent.filepicker.filter.entity.BaseFile;
 import com.vincent.filepicker.filter.entity.Directory;
 import com.vincent.filepicker.filter.entity.ImageFile;
 import com.vincent.filepicker.filter.entity.NormalFile;
@@ -26,11 +28,14 @@ import static com.vincent.filepicker.activity.AudioPickActivity.IS_NEED_RECORDER
 import static com.vincent.filepicker.activity.ImagePickActivity.IS_NEED_CAMERA;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+    private TextView mTvResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mTvResult = (TextView) findViewById(R.id.tv_result);
     }
 
     @Override
@@ -71,25 +76,45 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case Constant.REQUEST_CODE_PICK_IMAGE:
                 if (resultCode == RESULT_OK) {
                     ArrayList<ImageFile> list = data.getParcelableArrayListExtra(Constant.RESULT_PICK_IMAGE);
-                    Log.v("Dir", "DONE");
+                    StringBuilder builder = new StringBuilder();
+                    for (ImageFile file : list) {
+                        String path = file.getPath();
+                        builder.append(path + "\n");
+                    }
+                    mTvResult.setText(builder.toString());
                 }
                 break;
             case Constant.REQUEST_CODE_PICK_VIDEO:
                 if (resultCode == RESULT_OK) {
                     ArrayList<VideoFile> list = data.getParcelableArrayListExtra(Constant.RESULT_PICK_VIDEO);
-                    Log.v("Dir", "DONE");
+                    StringBuilder builder = new StringBuilder();
+                    for (VideoFile file : list) {
+                        String path = file.getPath();
+                        builder.append(path + "\n");
+                    }
+                    mTvResult.setText(builder.toString());
                 }
                 break;
             case Constant.REQUEST_CODE_PICK_AUDIO:
                 if (resultCode == RESULT_OK) {
                     ArrayList<AudioFile> list = data.getParcelableArrayListExtra(Constant.RESULT_PICK_AUDIO);
-                    Log.v("Dir", "DONE");
+                    StringBuilder builder = new StringBuilder();
+                    for (AudioFile file : list) {
+                        String path = file.getPath();
+                        builder.append(path + "\n");
+                    }
+                    mTvResult.setText(builder.toString());
                 }
                 break;
             case Constant.REQUEST_CODE_PICK_FILE:
                 if (resultCode == RESULT_OK) {
                     ArrayList<NormalFile> list = data.getParcelableArrayListExtra(Constant.RESULT_PICK_FILE);
-                    Log.v("Dir", "DONE");
+                    StringBuilder builder = new StringBuilder();
+                    for (NormalFile file : list) {
+                        String path = file.getPath();
+                        builder.append(path + "\n");
+                    }
+                    mTvResult.setText(builder.toString());
                 }
                 break;
         }
