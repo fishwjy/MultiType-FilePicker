@@ -36,17 +36,17 @@ This is a light Android file picker library.
         break;
 	case Constant.REQUEST_CODE_PICK_VIDEO:
 		if (resultCode == RESULT_OK) {
-            ArrayList<ImageFile> list = data.getParcelableArrayListExtra(Constant.RESULT_PICK_VIDEO);
+            ArrayList<VideoFile> list = data.getParcelableArrayListExtra(Constant.RESULT_PICK_VIDEO);
         }
         break;
     case Constant.REQUEST_CODE_PICK_AUDIO:
 		if (resultCode == RESULT_OK) {
-            ArrayList<ImageFile> list = data.getParcelableArrayListExtra(Constant.RESULT_PICK_AUDIO);
+            ArrayList<AudioFile> list = data.getParcelableArrayListExtra(Constant.RESULT_PICK_AUDIO);
         }
         break;
 	case Constant.REQUEST_CODE_PICK_FILE:
 		if (resultCode == RESULT_OK) {
-            ArrayList<ImageFile> list = data.getParcelableArrayListExtra(Constant.RESULT_PICK_FILE);
+            ArrayList<NormalFile> list = data.getParcelableArrayListExtra(Constant.RESULT_PICK_FILE);
         }
         break;
 
