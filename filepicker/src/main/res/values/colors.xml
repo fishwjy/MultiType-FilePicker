@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="BgToolBar">#373B3E</color>
+    <color name="BgRv">#191919</color>
+    <color name="BgItem">#353535</color>
+
+    <color name="ShadowItem">#94333232</color>
+
+    <color name="BgRvFileDivider">#EEEEEE</color>
+</resources>

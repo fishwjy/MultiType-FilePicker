@@ -1,0 +1,41 @@
+<resources>
+
+    <style name="FilePickerTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+
+        <!-- 控制ToolBar右侧Menu弹出的位置 -->
+        <item name="actionOverflowMenuStyle">@style/OverflowMenuStyle</item>
+
+        <!-- 单独配置ToolBar右侧Menu按钮即三个小圆点的颜色 -->
+        <!--<item name="colorControlNormal">#FFFFFF</item>-->
+
+        <!-- 配置所有字体颜色 -->
+        <!--<item name="android:textColorPrimary">#FFFFFF</item>-->
+
+        <!-- RecyclerView分割线 -->
+        <item name="android:listDivider">@drawable/divider_rv</item>
+    </style>
+
+    <!-- ToolBar菜单弹出样式 -->
+    <style name="OverflowMenuStyle" parent="@style/Widget.AppCompat.PopupMenu.Overflow">
+        <!-- 是否覆盖锚点，默认为true，即盖住Toolbar -->
+        <item name="overlapAnchor">false</item>
+        <!-- 弹出层背景颜色 -->
+        <item name="android:popupBackground">#000000</item>
+        <!-- 弹出层垂直方向上的偏移，即在竖直方向上距离Toolbar的距离，值为负则会盖住Toolbar -->
+        <item name="android:dropDownVerticalOffset">4dp</item>
+        <!-- 弹出层水平方向上的偏移，即距离屏幕左边的距离，负值会导致右边出现空隙 -->
+        <item name="android:dropDownHorizontalOffset">0dp</item>
+    </style>
+
+    <!-- ToolBar菜单样式 -->
+    <style name="ToolbarTheme" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        <!-- 非溢出菜单字体颜色，想要修改溢出菜单内的字体颜色只能直接设置textColorPrimary但此选项会影响Title的颜色-->
+        <!--<item name="actionMenuTextColor">#FD7436</item>-->
+        <item name="android:textSize">16sp</item> <!-- 字体大小 -->
+    </style>
+
+</resources>

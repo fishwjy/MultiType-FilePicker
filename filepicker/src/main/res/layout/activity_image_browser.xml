@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/tb_image_pick"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/BgToolBar"
+        android:theme="@style/ToolbarTheme"
+        app:navigationIcon="@mipmap/ic_back" />
+
+    <RelativeLayout
+        android:id="@+id/layout_bottom_bar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/BgToolBar">
+
+        <ImageView
+            android:id="@+id/cbx"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/selector_cbx" />
+    </RelativeLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vp_image_pick"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/layout_bottom_bar"
+        android:layout_below="@id/tb_image_pick"
+        android:background="#000000" />
+
+</RelativeLayout>
