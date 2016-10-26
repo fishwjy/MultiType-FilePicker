@@ -2,9 +2,7 @@
 This is a light Android file picker library.
 
 ## Thanks
-```
 Inspired by [Android-FilePicker](https://github.com/DroidNinja/Android-FilePicker)
-```
 
 ## License
 
