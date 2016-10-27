@@ -1,5 +1,6 @@
 # MultiType-FilePicker
 This is a light Android file picker library.
+Please star this library if you like it. :)
 
 ## Demo
 ![Demo](/pic/pick_img.gif)
