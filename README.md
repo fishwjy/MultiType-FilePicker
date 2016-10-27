@@ -60,6 +60,8 @@ Please star this library if you like it. :)
 
 ## Thanks
 Inspired by [Android-FilePicker](https://github.com/DroidNinja/Android-FilePicker)
+Image Viewer provide by [PhotoView](https://github.com/bm-x/PhotoView)
+Image Loader provide by [Glide](https://github.com/bumptech/glide)
 
 ## License
 ```
