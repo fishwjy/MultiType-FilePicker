@@ -3,6 +3,10 @@ This is a light Android file picker library.
 
 ## Demo
 ![Demo](/pic/pick_img.gif)
+![Demo](/pic/pick_img1.gif)
+![Demo](/pic/pick_vid.png)
+![Demo](/pic/pick_aud.png)
+![Demo](/pic/pick_file.png)
 
 ## Usage
 ### 1.Start Activity For Result
