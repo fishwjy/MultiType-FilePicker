@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,7 +28,7 @@ import static com.vincent.filepicker.activity.ImagePickActivity.DEFAULT_MAX_NUMB
  * Time: 14:37
  */
 
-public class ImageBrowserActivity extends AppCompatActivity {
+public class ImageBrowserActivity extends BaseActivity {
     public static final String IMAGE_BROWSER_INIT_INDEX = "ImageBrowserInitIndex";
     public static final String IMAGE_BROWSER_LIST = "ImageBrowserList";
     public static final String IMAGE_BROWSER_SELECTED_NUMBER = "ImageBrowserSelectedNumber";
@@ -44,8 +43,12 @@ public class ImageBrowserActivity extends AppCompatActivity {
     private ImageView mSelectView;
 
     @Override
+    void permissionGranted() {
+        initView();
+    }
+
+    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_browser);
 
         mMaxNumber = getIntent().getIntExtra(Constant.MAX_NUMBER, DEFAULT_MAX_NUMBER);
@@ -54,7 +57,10 @@ public class ImageBrowserActivity extends AppCompatActivity {
         mCurrentIndex = initIndex;
         mList = getIntent().getParcelableArrayListExtra(IMAGE_BROWSER_LIST);
 
-        initView();
+
+        super.onCreate(savedInstanceState);
+
+
     }
 
     private void initView() {
@@ -76,7 +82,7 @@ public class ImageBrowserActivity extends AppCompatActivity {
                     return;
                 }
 
-                if(v.isSelected()) {
+                if (v.isSelected()) {
                     mList.get(mCurrentIndex).setSelected(false);
                     mCurrentNumber--;
                     v.setSelected(false);

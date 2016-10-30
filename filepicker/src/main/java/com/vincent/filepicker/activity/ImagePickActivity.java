@@ -3,7 +3,6 @@ package com.vincent.filepicker.activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -33,7 +32,7 @@ import static com.vincent.filepicker.activity.ImageBrowserActivity.IMAGE_BROWSER
  * Time: 16:41
  */
 
-public class ImagePickActivity extends AppCompatActivity {
+public class ImagePickActivity extends BaseActivity {
     public static final String IS_NEED_CAMERA = "IsNeedCamera";
 
     public static final int DEFAULT_MAX_NUMBER = 9;
@@ -46,15 +45,18 @@ public class ImagePickActivity extends AppCompatActivity {
     private boolean isNeedCamera;
     private ArrayList<ImageFile> mSelectedList = new ArrayList<>();
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_pick);
-
         mMaxNumber = getIntent().getIntExtra(Constant.MAX_NUMBER, DEFAULT_MAX_NUMBER);
         isNeedCamera = getIntent().getBooleanExtra(IS_NEED_CAMERA, false);
-
         initView();
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    void permissionGranted() {
         loadData();
     }
 
@@ -132,7 +134,6 @@ public class ImagePickActivity extends AppCompatActivity {
                         list.get(index).setSelected(true);
                     }
                 }
-
                 mAdapter.refresh(list);
             }
         });

@@ -3,10 +3,7 @@ package com.vincent.filepicker.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
-import android.provider.MediaStore;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -18,12 +15,10 @@ import android.widget.ProgressBar;
 import com.vincent.filepicker.Constant;
 import com.vincent.filepicker.DividerListItemDecoration;
 import com.vincent.filepicker.R;
-import com.vincent.filepicker.adapter.AudioPickAdapter;
 import com.vincent.filepicker.adapter.NormalFilePickAdapter;
 import com.vincent.filepicker.adapter.OnSelectStateListener;
 import com.vincent.filepicker.filter.FileFilter;
 import com.vincent.filepicker.filter.callback.FilterResultCallback;
-import com.vincent.filepicker.filter.entity.AudioFile;
 import com.vincent.filepicker.filter.entity.Directory;
 import com.vincent.filepicker.filter.entity.NormalFile;
 
@@ -36,7 +31,7 @@ import java.util.List;
  * Time: 10:14
  */
 
-public class NormalFilePickActivity extends AppCompatActivity {
+public class NormalFilePickActivity extends BaseActivity {
     public static final int DEFAULT_MAX_NUMBER = 9;
     public static final String SUFFIX = "Suffix";
     private int mMaxNumber;
@@ -49,18 +44,7 @@ public class NormalFilePickActivity extends AppCompatActivity {
     private String[] mSuffix;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_file_pick);
-
-        mMaxNumber = getIntent().getIntExtra(Constant.MAX_NUMBER, DEFAULT_MAX_NUMBER);
-        mSuffix = getIntent().getStringArrayExtra(SUFFIX);
-    }
-
-    @Override
-    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        initView();
+    void permissionGranted() {
 
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -68,6 +52,24 @@ public class NormalFilePickActivity extends AppCompatActivity {
                 loadData();
             }
         }, 1000);
+    }
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+
+        setContentView(R.layout.activity_file_pick);
+
+        mMaxNumber = getIntent().getIntExtra(Constant.MAX_NUMBER, DEFAULT_MAX_NUMBER);
+        mSuffix = getIntent().getStringArrayExtra(SUFFIX);
+        super.onCreate(savedInstanceState);
+
+    }
+
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        initView();
+
     }
 
     private void initView() {
