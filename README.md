@@ -1,6 +1,8 @@
 # MultiType-FilePicker
 This is a light Android file picker library.
 
+Please star this library if you like it. :)
+
 ## Demo
 ![Demo](/pic/pick_img.gif)
 ![Demo](/pic/pick_img1.gif)
@@ -59,6 +61,10 @@ This is a light Android file picker library.
 
 ## Thanks
 Inspired by [Android-FilePicker](https://github.com/DroidNinja/Android-FilePicker)
+
+Image Viewer provide by [PhotoView](https://github.com/bm-x/PhotoView)
+
+Image Loader provide by [Glide](https://github.com/bumptech/glide)
 
 ## License
 ```

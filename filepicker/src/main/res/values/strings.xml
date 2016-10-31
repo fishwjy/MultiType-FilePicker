@@ -3,4 +3,5 @@
     <string name="confirm">Done</string>
     <string name="no_video_play_app">No App exists for camera!</string>
     <string name="record_audio">Record Audio</string>
+    <string name="rationale_storage">Need Reading Storage Permission for Picking Files</string>
 </resources>

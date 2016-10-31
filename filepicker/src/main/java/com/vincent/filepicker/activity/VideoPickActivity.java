@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -32,7 +31,7 @@ import java.util.List;
  * Time: 14:02
  */
 
-public class VideoPickActivity extends AppCompatActivity {
+public class VideoPickActivity extends BaseActivity {
     public static final String IS_NEED_CAMERA = "IsNeedCamera";
 
     public static final int DEFAULT_MAX_NUMBER = 9;
@@ -46,15 +45,20 @@ public class VideoPickActivity extends AppCompatActivity {
     private ArrayList<VideoFile> mSelectedList = new ArrayList<>();
 
     @Override
+    void permissionGranted() {
+        loadData();
+    }
+
+    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_pick);
 
         mMaxNumber = getIntent().getIntExtra(Constant.MAX_NUMBER, DEFAULT_MAX_NUMBER);
         isNeedCamera = getIntent().getBooleanExtra(IS_NEED_CAMERA, false);
 
         initView();
-        loadData();
+        super.onCreate(savedInstanceState);
+
     }
 
     private void initView() {

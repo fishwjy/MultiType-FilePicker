@@ -32,4 +32,5 @@ dependencies {
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.bm.photoview:library:1.4.1'
     compile 'com.android.support:design:24.2.1'
+    compile 'pub.devrel:easypermissions:0.2.1'
 }
