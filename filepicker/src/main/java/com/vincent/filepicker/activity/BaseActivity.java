@@ -38,7 +38,7 @@ public abstract class BaseActivity extends AppCompatActivity implements EasyPerm
      */
     @AfterPermissionGranted(RC_READ_EXTERNAL_STORAGE)
     private void readExternalStorage() {
-        boolean isGranted = EasyPermissions.hasPermissions(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+        boolean isGranted = EasyPermissions.hasPermissions(this, "android.permission.READ_EXTERNAL_STORAGE");
         if (isGranted) {
             // Have permission, do the thing!
 //            Toast.makeText(this, "TODO: Camera things", Toast.LENGTH_LONG).show();
@@ -46,7 +46,7 @@ public abstract class BaseActivity extends AppCompatActivity implements EasyPerm
         } else {
             // Ask for one permission
             EasyPermissions.requestPermissions(this, getString(R.string.rationale_storage),
-                    RC_READ_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE);
+                    RC_READ_EXTERNAL_STORAGE, "android.permission.READ_EXTERNAL_STORAGE");
         }
 
     }

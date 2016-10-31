@@ -11,6 +11,7 @@
         android:layout_height="50dp"
         android:background="@color/BgToolBar"
         android:theme="@style/ToolbarTheme"
+        app:titleTextColor="#FFFFFF"
         app:navigationIcon="@mipmap/ic_back" />
 
     <RelativeLayout

@@ -34,7 +34,7 @@
     <!-- ToolBar菜单样式 -->
     <style name="ToolbarTheme" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
         <!-- 非溢出菜单字体颜色，想要修改溢出菜单内的字体颜色只能直接设置textColorPrimary但此选项会影响Title的颜色-->
-        <!--<item name="actionMenuTextColor">#FD7436</item>-->
+        <!--<item name="actionMenuTextColor">#FFFFFF</item>-->
         <item name="android:textSize">16sp</item> <!-- 字体大小 -->
     </style>
 
