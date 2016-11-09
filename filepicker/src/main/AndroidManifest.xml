@@ -16,7 +16,8 @@
 
         <activity android:name=".activity.ImageBrowserActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/FilePickerTheme" />
+            android:theme="@style/FilePickerTheme"
+            android:hardwareAccelerated="false" />
 
         <activity android:name=".activity.VideoPickActivity"
             android:screenOrientation="portrait"
