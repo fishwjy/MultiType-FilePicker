@@ -113,6 +113,7 @@ public class ImagePickActivity extends BaseActivity {
                     mCurrentNumber = data.getIntExtra(IMAGE_BROWSER_SELECTED_NUMBER, 0);
                     mAdapter.setCurrentNumber(mCurrentNumber);
                     mTbImagePick.setTitle(mCurrentNumber + "/" + mMaxNumber);
+                    refreshSelectedList(list);
                     mAdapter.refresh(list);
                 }
                 break;
@@ -137,6 +138,14 @@ public class ImagePickActivity extends BaseActivity {
                 mAdapter.refresh(list);
             }
         });
+    }
+
+    private void refreshSelectedList(List<ImageFile> list) {
+        for (ImageFile file : list) {
+            if(file.isSelected() && !mSelectedList.contains(file)) {
+                mSelectedList.add(file);
+            }
+        }
     }
 
     @Override
