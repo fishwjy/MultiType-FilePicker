@@ -14,10 +14,10 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.vincent.filepicker.R;
+import com.vincent.filepicker.ToastUtil;
 import com.vincent.filepicker.Util;
 import com.vincent.filepicker.activity.VideoPickActivity;
 import com.vincent.filepicker.filter.entity.VideoFile;
@@ -117,6 +117,7 @@ public class VideoPickAdapter extends BaseAdapter<VideoFile, VideoPickAdapter.Vi
                 @Override
                 public void onClick(View v) {
                     if (!v.isSelected() && isUpToMax()) {
+                        ToastUtil.getInstance(mContext).showToast(R.string.up_to_max);
                         return;
                     }
 
@@ -148,7 +149,7 @@ public class VideoPickAdapter extends BaseAdapter<VideoFile, VideoPickAdapter.Vi
                     if (Util.detectIntent(mContext, intent)) {
                         mContext.startActivity(intent);
                     } else {
-                        Toast.makeText(mContext, "No Application exists for camera!", Toast.LENGTH_SHORT).show();
+                        ToastUtil.getInstance(mContext).showToast("No Application exists for camera!");
                     }
                 }
             });

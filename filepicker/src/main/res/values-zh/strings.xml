@@ -5,4 +5,5 @@
     <string name="no_video_play_app">没有可用的视频播放应用</string>
     <string name="record_audio">录音</string>
     <string name="rationale_storage">需要读取存储权限以提供文件选择功能</string>
+    <string name="up_to_max">已达到选择上限</string>
 </resources>

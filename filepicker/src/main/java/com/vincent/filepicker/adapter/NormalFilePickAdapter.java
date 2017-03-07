@@ -1,19 +1,16 @@
 package com.vincent.filepicker.adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.vincent.filepicker.R;
+import com.vincent.filepicker.ToastUtil;
 import com.vincent.filepicker.Util;
-import com.vincent.filepicker.filter.entity.AudioFile;
 import com.vincent.filepicker.filter.entity.NormalFile;
 
 import java.util.ArrayList;
@@ -80,6 +77,7 @@ public class NormalFilePickAdapter extends BaseAdapter<NormalFile, NormalFilePic
             @Override
             public void onClick(View v) {
                 if (!v.isSelected() && isUpToMax()) {
+                    ToastUtil.getInstance(mContext).showToast(R.string.up_to_max);
                     return;
                 }
 

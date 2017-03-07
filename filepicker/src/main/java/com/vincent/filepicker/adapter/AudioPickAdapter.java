@@ -9,9 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.vincent.filepicker.R;
+import com.vincent.filepicker.ToastUtil;
 import com.vincent.filepicker.Util;
 import com.vincent.filepicker.filter.entity.AudioFile;
 
@@ -66,6 +66,7 @@ public class AudioPickAdapter extends BaseAdapter<AudioFile, AudioPickAdapter.Au
             @Override
             public void onClick(View v) {
                 if (!v.isSelected() && isUpToMax()) {
+                    ToastUtil.getInstance(mContext).showToast(R.string.up_to_max);
                     return;
                 }
 
@@ -94,7 +95,7 @@ public class AudioPickAdapter extends BaseAdapter<AudioFile, AudioPickAdapter.Au
                 if (Util.detectIntent(mContext, intent)) {
                     mContext.startActivity(intent);
                 } else {
-                    Toast.makeText(mContext, "No Application exists for audio!", Toast.LENGTH_SHORT).show();
+                    ToastUtil.getInstance(mContext).showToast("No Application exists for audio!");
                 }
             }
         });

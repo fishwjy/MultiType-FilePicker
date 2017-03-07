@@ -55,11 +55,12 @@ public class NormalFilePickActivity extends BaseActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_file_pick);
 
         mMaxNumber = getIntent().getIntExtra(Constant.MAX_NUMBER, DEFAULT_MAX_NUMBER);
         mSuffix = getIntent().getStringArrayExtra(SUFFIX);
+
+        super.onCreate(savedInstanceState);
     }
 
     @Override

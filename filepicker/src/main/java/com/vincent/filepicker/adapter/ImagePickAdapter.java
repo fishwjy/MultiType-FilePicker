@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.vincent.filepicker.Constant;
 import com.vincent.filepicker.R;
+import com.vincent.filepicker.ToastUtil;
 import com.vincent.filepicker.activity.ImageBrowserActivity;
 import com.vincent.filepicker.activity.ImagePickActivity;
 import com.vincent.filepicker.filter.entity.ImageFile;
@@ -28,8 +29,7 @@ import java.util.Locale;
 
 import static android.os.Environment.DIRECTORY_DCIM;
 import static com.vincent.filepicker.activity.ImageBrowserActivity.IMAGE_BROWSER_INIT_INDEX;
-import static com.vincent.filepicker.activity.ImageBrowserActivity.IMAGE_BROWSER_LIST;
-import static com.vincent.filepicker.activity.ImageBrowserActivity.IMAGE_BROWSER_SELECTED_NUMBER;
+import static com.vincent.filepicker.activity.ImageBrowserActivity.IMAGE_BROWSER_SELECTED_LIST;
 
 /**
  * Created by Vincent Woo
@@ -113,21 +113,22 @@ public class ImagePickAdapter extends BaseAdapter<ImageFile, ImagePickAdapter.Im
                 @Override
                 public void onClick(View v) {
                     if (!v.isSelected() && isUpToMax()) {
+                        ToastUtil.getInstance(mContext).showToast(R.string.up_to_max);
                         return;
                     }
 
+                    int index = isNeedCamera ? holder.getAdapterPosition() - 1 : holder.getAdapterPosition();
                     if (v.isSelected()) {
                         holder.mShadow.setVisibility(View.INVISIBLE);
                         holder.mCbx.setSelected(false);
                         mCurrentNumber--;
+                        mList.get(index).setSelected(false);
                     } else {
                         holder.mShadow.setVisibility(View.VISIBLE);
                         holder.mCbx.setSelected(true);
                         mCurrentNumber++;
+                        mList.get(index).setSelected(true);
                     }
-
-                    int index = isNeedCamera ? holder.getAdapterPosition() - 1 : holder.getAdapterPosition();
-                    mList.get(index).setSelected(holder.mCbx.isSelected());
 
                     if (mListener != null) {
                         mListener.OnSelectStateChanged(holder.mCbx.isSelected(), mList.get(index));
@@ -142,8 +143,7 @@ public class ImagePickAdapter extends BaseAdapter<ImageFile, ImagePickAdapter.Im
                     intent.putExtra(Constant.MAX_NUMBER, mMaxNumber);
                     intent.putExtra(IMAGE_BROWSER_INIT_INDEX,
                             isNeedCamera ? holder.getAdapterPosition() - 1 : holder.getAdapterPosition());
-                    intent.putParcelableArrayListExtra(IMAGE_BROWSER_LIST, mList);
-                    intent.putExtra(IMAGE_BROWSER_SELECTED_NUMBER, mCurrentNumber);
+                    intent.putParcelableArrayListExtra(IMAGE_BROWSER_SELECTED_LIST, ((ImagePickActivity) mContext).mSelectedList);
                     ((Activity) mContext).startActivityForResult(intent, Constant.REQUEST_CODE_BROWSER_IMAGE);
                 }
             });

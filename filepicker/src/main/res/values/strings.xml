@@ -4,4 +4,5 @@
     <string name="no_video_play_app">No App exists for camera!</string>
     <string name="record_audio">Record Audio</string>
     <string name="rationale_storage">Need Reading Storage Permission for Picking Files</string>
+    <string name="up_to_max">Already up to max</string>
 </resources>

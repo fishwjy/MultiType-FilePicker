@@ -16,9 +16,14 @@ import com.bm.library.PhotoView;
 import com.bumptech.glide.Glide;
 import com.vincent.filepicker.Constant;
 import com.vincent.filepicker.R;
+import com.vincent.filepicker.ToastUtil;
+import com.vincent.filepicker.filter.FileFilter;
+import com.vincent.filepicker.filter.callback.FilterResultCallback;
+import com.vincent.filepicker.filter.entity.Directory;
 import com.vincent.filepicker.filter.entity.ImageFile;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.vincent.filepicker.activity.ImagePickActivity.DEFAULT_MAX_NUMBER;
 
@@ -30,8 +35,7 @@ import static com.vincent.filepicker.activity.ImagePickActivity.DEFAULT_MAX_NUMB
 
 public class ImageBrowserActivity extends BaseActivity {
     public static final String IMAGE_BROWSER_INIT_INDEX = "ImageBrowserInitIndex";
-    public static final String IMAGE_BROWSER_LIST = "ImageBrowserList";
-    public static final String IMAGE_BROWSER_SELECTED_NUMBER = "ImageBrowserSelectedNumber";
+    public static final String IMAGE_BROWSER_SELECTED_LIST = "ImageBrowserSelectedList";
     private int mMaxNumber;
     private int mCurrentNumber = 0;
     private int initIndex = 0;
@@ -41,22 +45,25 @@ public class ImageBrowserActivity extends BaseActivity {
     private Toolbar mTbImagePick;
     private ArrayList<ImageFile> mList = new ArrayList<>();
     private ImageView mSelectView;
+    private ArrayList<ImageFile> mSelectedFiles;
 
     @Override
     void permissionGranted() {
-        initView();
+        loadData();
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_browser);
 
         mMaxNumber = getIntent().getIntExtra(Constant.MAX_NUMBER, DEFAULT_MAX_NUMBER);
-        mCurrentNumber = getIntent().getIntExtra(IMAGE_BROWSER_SELECTED_NUMBER, 0);
         initIndex = getIntent().getIntExtra(IMAGE_BROWSER_INIT_INDEX, 0);
         mCurrentIndex = initIndex;
-        mList = getIntent().getParcelableArrayListExtra(IMAGE_BROWSER_LIST);
+        mSelectedFiles = getIntent().getParcelableArrayListExtra(IMAGE_BROWSER_SELECTED_LIST);
+        mCurrentNumber = mSelectedFiles.size();
+
+
+        super.onCreate(savedInstanceState);
     }
 
     private void initView() {
@@ -75,6 +82,7 @@ public class ImageBrowserActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 if (!v.isSelected() && isUpToMax()) {
+                    ToastUtil.getInstance(ImageBrowserActivity.this).showToast(R.string.up_to_max);
                     return;
                 }
 
@@ -82,10 +90,12 @@ public class ImageBrowserActivity extends BaseActivity {
                     mList.get(mCurrentIndex).setSelected(false);
                     mCurrentNumber--;
                     v.setSelected(false);
+                    mSelectedFiles.remove(mList.get(mCurrentIndex));
                 } else {
                     mList.get(mCurrentIndex).setSelected(true);
                     mCurrentNumber++;
                     v.setSelected(true);
+                    mSelectedFiles.add(mList.get(mCurrentIndex));
                 }
 
                 mTbImagePick.setTitle(mCurrentNumber + "/" + mMaxNumber);
@@ -115,6 +125,27 @@ public class ImageBrowserActivity extends BaseActivity {
 
         mViewPager.setCurrentItem(initIndex, false);
         mSelectView.setSelected(mList.get(mCurrentIndex).isSelected());
+    }
+
+    private void loadData() {
+        FileFilter.getImages(this, new FilterResultCallback<ImageFile>() {
+            @Override
+            public void onResult(List<Directory<ImageFile>> directories) {
+                mList.clear();
+                for (Directory<ImageFile> directory : directories) {
+                    mList.addAll(directory.getFiles());
+                }
+
+                for (ImageFile file : mList) {
+                    if (mSelectedFiles.contains(file)) {
+                        file.setSelected(true);
+                    }
+                }
+
+                initView();
+                mViewPager.getAdapter().notifyDataSetChanged();
+            }
+        });
     }
 
     private class ImageBrowserAdapter extends PagerAdapter {
@@ -169,8 +200,8 @@ public class ImageBrowserActivity extends BaseActivity {
 
     private void finishThis() {
         Intent intent = new Intent();
-        intent.putParcelableArrayListExtra(Constant.RESULT_BROWSER_IMAGE, mList);
-        intent.putExtra(IMAGE_BROWSER_SELECTED_NUMBER, mCurrentNumber);
+        intent.putParcelableArrayListExtra(Constant.RESULT_BROWSER_IMAGE, mSelectedFiles);
+//        intent.putExtra(IMAGE_BROWSER_SELECTED_NUMBER, mCurrentNumber);
         setResult(RESULT_OK, intent);
         finish();
     }

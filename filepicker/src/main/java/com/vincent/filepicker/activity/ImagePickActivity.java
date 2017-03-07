@@ -24,8 +24,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.vincent.filepicker.activity.ImageBrowserActivity.IMAGE_BROWSER_SELECTED_NUMBER;
-
 /**
  * Created by Vincent Woo
  * Date: 2016/10/12
@@ -43,7 +41,7 @@ public class ImagePickActivity extends BaseActivity {
     private RecyclerView mRecyclerView;
     private ImagePickAdapter mAdapter;
     private boolean isNeedCamera;
-    private ArrayList<ImageFile> mSelectedList = new ArrayList<>();
+    public ArrayList<ImageFile> mSelectedList = new ArrayList<>();
 
     @Override
     void permissionGranted() {
@@ -52,12 +50,13 @@ public class ImagePickActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_pick);
 
         mMaxNumber = getIntent().getIntExtra(Constant.MAX_NUMBER, DEFAULT_MAX_NUMBER);
         isNeedCamera = getIntent().getBooleanExtra(IS_NEED_CAMERA, false);
         initView();
+
+        super.onCreate(savedInstanceState);
     }
 
     private void initView() {
@@ -111,11 +110,20 @@ public class ImagePickActivity extends BaseActivity {
             case Constant.REQUEST_CODE_BROWSER_IMAGE:
                 if (resultCode == RESULT_OK) {
                     ArrayList<ImageFile> list = data.getParcelableArrayListExtra(Constant.RESULT_BROWSER_IMAGE);
-                    mCurrentNumber = data.getIntExtra(IMAGE_BROWSER_SELECTED_NUMBER, 0);
+                    mCurrentNumber = list.size();
                     mAdapter.setCurrentNumber(mCurrentNumber);
                     mTbImagePick.setTitle(mCurrentNumber + "/" + mMaxNumber);
-                    refreshSelectedList(list);
-                    mAdapter.refresh(list);
+                    mSelectedList.clear();
+                    mSelectedList.addAll(list);
+
+                    for (ImageFile file : mAdapter.getDataSet()) {
+                        if (mSelectedList.contains(file)) {
+                            file.setSelected(true);
+                        } else {
+                            file.setSelected(false);
+                        }
+                    }
+                    mAdapter.notifyDataSetChanged();
                 }
                 break;
         }
