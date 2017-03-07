@@ -11,12 +11,12 @@ import java.lang.ref.WeakReference;
  * Time: 17:27
  */
 public class ToastUtil {
-    private WeakReference<Context> mContext;
+    private static WeakReference<Context> mContext;
     private static ToastUtil mInstance;
     private Toast mToast;
 
     public static ToastUtil getInstance(Context ctx) {
-        if (mInstance == null) {
+        if (mInstance == null || mContext.get() == null) {
             mInstance = new ToastUtil(ctx);
         }
 
