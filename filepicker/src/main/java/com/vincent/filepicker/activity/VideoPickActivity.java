@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import com.vincent.filepicker.Constant;
 import com.vincent.filepicker.DividerGridItemDecoration;
@@ -32,6 +33,8 @@ import java.util.List;
  */
 
 public class VideoPickActivity extends BaseActivity {
+    public static final String THUMBNAIL_PATH = "FilePick";
+
     public static final String IS_NEED_CAMERA = "IsNeedCamera";
 
     public static final int DEFAULT_MAX_NUMBER = 9;
@@ -43,6 +46,7 @@ public class VideoPickActivity extends BaseActivity {
     private VideoPickAdapter mAdapter;
     private boolean isNeedCamera;
     private ArrayList<VideoFile> mSelectedList = new ArrayList<>();
+    private ProgressBar mProgressBar;
 
     @Override
     void permissionGranted() {
@@ -51,14 +55,12 @@ public class VideoPickActivity extends BaseActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_pick);
 
         mMaxNumber = getIntent().getIntExtra(Constant.MAX_NUMBER, DEFAULT_MAX_NUMBER);
         isNeedCamera = getIntent().getBooleanExtra(IS_NEED_CAMERA, false);
-
         initView();
-        super.onCreate(savedInstanceState);
-
     }
 
     private void initView() {
@@ -93,10 +95,19 @@ public class VideoPickActivity extends BaseActivity {
                 mTbImagePick.setTitle(mCurrentNumber + "/" + mMaxNumber);
             }
         });
+
+        mProgressBar = (ProgressBar) findViewById(R.id.pb_video_pick);
+        File folder = new File(getExternalCacheDir().getAbsolutePath() + File.separator + THUMBNAIL_PATH);
+        if (!folder.exists()) {
+            mProgressBar.setVisibility(View.VISIBLE);
+        } else {
+            mProgressBar.setVisibility(View.GONE);
+        }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case Constant.REQUEST_CODE_TAKE_VIDEO:
                 if (resultCode == RESULT_OK) {
@@ -116,6 +127,7 @@ public class VideoPickActivity extends BaseActivity {
         FileFilter.getVideos(this, new FilterResultCallback<VideoFile>() {
             @Override
             public void onResult(List<Directory<VideoFile>> directories) {
+                mProgressBar.setVisibility(View.GONE);
                 List<VideoFile> list = new ArrayList<>();
                 for (Directory<VideoFile> directory : directories) {
                     list.addAll(directory.getFiles());

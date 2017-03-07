@@ -49,6 +49,7 @@ public class ImageBrowserActivity extends BaseActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_browser);
 
         mMaxNumber = getIntent().getIntExtra(Constant.MAX_NUMBER, DEFAULT_MAX_NUMBER);
@@ -56,11 +57,6 @@ public class ImageBrowserActivity extends BaseActivity {
         initIndex = getIntent().getIntExtra(IMAGE_BROWSER_INIT_INDEX, 0);
         mCurrentIndex = initIndex;
         mList = getIntent().getParcelableArrayListExtra(IMAGE_BROWSER_LIST);
-
-
-        super.onCreate(savedInstanceState);
-
-
     }
 
     private void initView() {

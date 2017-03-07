@@ -1,21 +1,17 @@
 package com.vincent.filepicker.filter.callback;
 
-import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.media.ThumbnailUtils;
-import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.text.TextUtils;
-import android.util.Log;
 
-import com.vincent.filepicker.filter.FileFilter;
 import com.vincent.filepicker.filter.entity.AudioFile;
 import com.vincent.filepicker.filter.entity.Directory;
 import com.vincent.filepicker.filter.entity.ImageFile;
@@ -44,6 +40,7 @@ import static android.provider.MediaStore.MediaColumns.DATE_ADDED;
 import static android.provider.MediaStore.MediaColumns.SIZE;
 import static android.provider.MediaStore.MediaColumns.TITLE;
 import static android.provider.MediaStore.Video.VideoColumns.DURATION;
+import static com.vincent.filepicker.activity.VideoPickActivity.THUMBNAIL_PATH;
 
 /**
  * Created by Vincent Woo
@@ -165,75 +162,93 @@ public class FileLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor
     };
 
     @SuppressWarnings("unchecked")
-    private void onVideoResult(Cursor data) {
-        List<Directory<VideoFile>> directories = new ArrayList<>();
-
-        if (data.getPosition() != -1) {
-            data.moveToPosition(-1);
-        }
-
-        while (data.moveToNext()) {
-            //Create a File instance
-            VideoFile video = new VideoFile();
-            video.setId(data.getLong(data.getColumnIndexOrThrow(_ID)));
-            video.setName(data.getString(data.getColumnIndexOrThrow(TITLE)));
-            video.setPath(data.getString(data.getColumnIndexOrThrow(DATA)));
-            video.setSize(data.getLong(data.getColumnIndexOrThrow(SIZE)));
-            video.setBucketId(data.getString(data.getColumnIndexOrThrow(BUCKET_ID)));
-            video.setBucketName(data.getString(data.getColumnIndexOrThrow(BUCKET_DISPLAY_NAME)));
-            video.setDate(data.getLong(data.getColumnIndexOrThrow(DATE_ADDED)));
-
-            video.setDuration(data.getLong(data.getColumnIndexOrThrow(DURATION)));
-
-            //Query Thumbnail
-            String filePath = context.get().getExternalCacheDir().getAbsolutePath() + "/"
-                    + video.getId() + ".png";
-            File file = new File(filePath);
-            if (file.exists()) {
-                video.setThumbnail(filePath);
-            } else {
-                String selection = MediaStore.Video.Thumbnails.VIDEO_ID + "=?";
-                String[] selectionArgs = new String[]{video.getId() + ""};
-                final Cursor thumbCursor = context.get().getContentResolver().query(
-                        MediaStore.Video.Thumbnails.EXTERNAL_CONTENT_URI,
-                        thumbColumns,
-                        selection,
-                        selectionArgs,
-                        null);
-                if (thumbCursor != null && thumbCursor.moveToFirst()) {
-                    String thumbnail = thumbCursor.getString(
-                            thumbCursor.getColumnIndexOrThrow(MediaStore.Video.Thumbnails.DATA));
-                    video.setThumbnail(thumbnail);
-                }
-                if (thumbCursor != null) {
-                    thumbCursor.close();
+    private void onVideoResult(final Cursor data) {
+        final Handler handler = new Handler();
+        final List<Directory<VideoFile>> directories = new ArrayList<>();
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (data.getPosition() != -1) {
+                    data.moveToPosition(-1);
                 }
 
-                //If there is no thumbnail in DB, create one on external disk
-                if (TextUtils.isEmpty(video.getThumbnail())) {
-                    String path = saveBitmap(getVideoThumbnail(video.getPath(), 180, 180,
-                            MediaStore.Images.Thumbnails.MINI_KIND), filePath);
-                    video.setThumbnail(path);
+                while (data.moveToNext()) {
+                    //Create a File instance
+                    VideoFile video = new VideoFile();
+                    video.setId(data.getLong(data.getColumnIndexOrThrow(_ID)));
+                    video.setName(data.getString(data.getColumnIndexOrThrow(TITLE)));
+                    video.setPath(data.getString(data.getColumnIndexOrThrow(DATA)));
+                    video.setSize(data.getLong(data.getColumnIndexOrThrow(SIZE)));
+                    video.setBucketId(data.getString(data.getColumnIndexOrThrow(BUCKET_ID)));
+                    video.setBucketName(data.getString(data.getColumnIndexOrThrow(BUCKET_DISPLAY_NAME)));
+                    video.setDate(data.getLong(data.getColumnIndexOrThrow(DATE_ADDED)));
+
+                    video.setDuration(data.getLong(data.getColumnIndexOrThrow(DURATION)));
+
+                    //Query Thumbnail
+                    File folder = new File(context.get().getExternalCacheDir().getAbsolutePath()
+                            + File.separator + THUMBNAIL_PATH);
+                    if (!folder.exists()) {
+                        folder.mkdirs();
+                    }
+
+                    String filePath = context.get().getExternalCacheDir().getAbsolutePath()
+                            + File.separator + THUMBNAIL_PATH + File.separator
+                            + video.getId() + ".png";
+                    File file = new File(filePath);
+                    if (file.exists()) {
+                        video.setThumbnail(filePath);
+                    } else {
+                        String selection = MediaStore.Video.Thumbnails.VIDEO_ID + "=?";
+                        String[] selectionArgs = new String[]{video.getId() + ""};
+                        final Cursor thumbCursor = context.get().getContentResolver().query(
+                                MediaStore.Video.Thumbnails.EXTERNAL_CONTENT_URI,
+                                thumbColumns,
+                                selection,
+                                selectionArgs,
+                                null);
+                        if (thumbCursor != null && thumbCursor.moveToFirst()) {
+                            String thumbnail = thumbCursor.getString(
+                                    thumbCursor.getColumnIndexOrThrow(MediaStore.Video.Thumbnails.DATA));
+                            video.setThumbnail(thumbnail);
+                        }
+                        if (thumbCursor != null) {
+                            thumbCursor.close();
+                        }
+
+                        //If there is no thumbnail in DB, create one on external disk
+                        if (TextUtils.isEmpty(video.getThumbnail())) {
+                            String path = saveBitmap(getVideoThumbnail(video.getPath(), 180, 180,
+                                    MediaStore.Images.Thumbnails.MINI_KIND), filePath);
+                            video.setThumbnail(path);
+                        }
+                    }
+
+                    //Create a Directory
+                    Directory<VideoFile> directory = new Directory<>();
+                    directory.setId(video.getBucketId());
+                    directory.setName(video.getBucketName());
+                    directory.setPath(extractDirectory(video.getPath()));
+
+                    if (!directories.contains(directory)) {
+                        directory.addFile(video);
+                        directories.add(directory);
+                    } else {
+                        directories.get(directories.indexOf(directory)).addFile(video);
+                    }
                 }
+
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (resultCallback != null) {
+                            resultCallback.onResult(directories);
+                        }
+                    }
+                });
             }
-
-            //Create a Directory
-            Directory<VideoFile> directory = new Directory<>();
-            directory.setId(video.getBucketId());
-            directory.setName(video.getBucketName());
-            directory.setPath(extractDirectory(video.getPath()));
-
-            if (!directories.contains(directory)) {
-                directory.addFile(video);
-                directories.add(directory);
-            } else {
-                directories.get(directories.indexOf(directory)).addFile(video);
-            }
-        }
-
-        if (resultCallback != null) {
-            resultCallback.onResult(directories);
-        }
+        });
+        thread.start();
     }
 
     @SuppressWarnings("unchecked")

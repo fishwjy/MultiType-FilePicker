@@ -45,19 +45,19 @@ public class ImagePickActivity extends BaseActivity {
     private boolean isNeedCamera;
     private ArrayList<ImageFile> mSelectedList = new ArrayList<>();
 
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        setContentView(R.layout.activity_image_pick);
-        mMaxNumber = getIntent().getIntExtra(Constant.MAX_NUMBER, DEFAULT_MAX_NUMBER);
-        isNeedCamera = getIntent().getBooleanExtra(IS_NEED_CAMERA, false);
-        initView();
-        super.onCreate(savedInstanceState);
-    }
-
     @Override
     void permissionGranted() {
         loadData();
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_image_pick);
+
+        mMaxNumber = getIntent().getIntExtra(Constant.MAX_NUMBER, DEFAULT_MAX_NUMBER);
+        isNeedCamera = getIntent().getBooleanExtra(IS_NEED_CAMERA, false);
+        initView();
     }
 
     private void initView() {
@@ -95,6 +95,7 @@ public class ImagePickActivity extends BaseActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case Constant.REQUEST_CODE_TAKE_IMAGE:
                 if (resultCode == RESULT_OK) {

@@ -49,15 +49,13 @@ public class AudioPickActivity extends BaseActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_audio_pick);
+
         mMaxNumber = getIntent().getIntExtra(Constant.MAX_NUMBER, DEFAULT_MAX_NUMBER);
         isNeedRecorder = getIntent().getBooleanExtra(IS_NEED_RECORDER, false);
         initView();
-        super.onCreate(savedInstanceState);
-
-
     }
-
 
     private void initView() {
         mTbImagePick = (Toolbar) findViewById(R.id.tb_audio_pick);
@@ -116,6 +114,7 @@ public class AudioPickActivity extends BaseActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case Constant.REQUEST_CODE_TAKE_AUDIO:
                 if (resultCode == RESULT_OK) {

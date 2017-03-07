@@ -27,4 +27,9 @@
         android:layout_below="@id/rv_top_divider"
         android:background="@color/BgRv" />
 
+    <ProgressBar android:id="@+id/pb_video_pick"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_centerInParent="true" />
+
 </RelativeLayout>
