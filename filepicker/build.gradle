@@ -32,3 +32,5 @@ dependencies {
     compile 'com.android.support:design:25.2.0'
     compile 'pub.devrel:easypermissions:0.3.0'
 }
+
+apply from: 'publish.gradle'

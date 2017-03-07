@@ -1,0 +1,98 @@
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
+
+
+def prjVersion = "1.0.0"
+def prjGroup = "com.vincent.filepicker"
+def prjName = "MultiTypeFilePicker"
+def prjArtifactId = "MultiTypeFilePicker"
+def prjDescription = "A light Android file picker library"
+def siteUrl = 'https://github.com/fishwjy/MultiType-FilePicker'      // 项目的主页
+def gitUrl = 'https://github.com/fishwjy/MultiType-FilePicker.git'   // Git仓库的url
+def pckName = "MultiTypeFilePicker"                                  //发布到JCenter上的项目名字
+def bintrayRepo = "maven"
+
+version = prjVersion
+group = prjGroup
+project.archivesBaseName=prjArtifactId
+install {
+    repositories.mavenInstaller {
+        // This generates POM.xml with proper parameters
+        pom.project {
+            packaging 'aar'
+            // Add your description here
+            name prjName
+            version prjVersion
+            groupId prjGroup
+            description prjDescription
+            url siteUrl
+            artifactId prjArtifactId
+            // Set your license
+            licenses {
+                license {
+                    name 'The Apache Software License, Version 2.0'
+                    url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                }
+            }
+            developers {
+                developer {
+                    id 'vincentwoo'
+                    name 'VincentWoo'
+                    email 'fishwjy@gmail.com'
+                }
+            }
+            scm {
+                connection gitUrl
+                developerConnection gitUrl
+                url siteUrl
+            }
+        }
+
+    }
+}
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+task javadoc(type: Javadoc) {
+    options.encoding = "UTF-8"
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+bintray {
+    user = properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apikey")
+    configurations = ['archives']
+    publish = true
+    dryRun = false
+    pkg {
+        repo = bintrayRepo
+        name = pckName
+        websiteUrl = siteUrl
+        vcsUrl = gitUrl
+        licenses = ["Apache-2.0"]
+        publicDownloadNumbers = true
+        version {
+            name = prjVersion
+            desc = prjDescription
+            vcsTag = prjVersion
+
+            gpg {
+                sign = true
+            }
+        }
+    }
+}
