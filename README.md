@@ -1,4 +1,6 @@
 # MultiType-FilePicker
+[![Download](https://api.bintray.com/packages/vincentwoo/maven/MultiTypeFilePicker/images/download.svg) ](https://bintray.com/vincentwoo/maven/MultiTypeFilePicker/_latestVersion)
+
 This is a light Android file picker library.
 
 Please star this library if you like it. :)
@@ -11,7 +13,10 @@ Please star this library if you like it. :)
 ![Demo](/pic/pick_file.png)
 
 ## Usage
-### 1.Start Activity For Result
+### 1.Import to your project
+    compile 'com.vincent.filepicker:MultiTypeFilePicker:latestVersion' 
+    
+### 2.Start Activity For Result
     case R.id.btn_pick_image:
 		Intent intent1 = new Intent(this, ImagePickActivity.class);
 		intent1.putExtra(IS_NEED_CAMERA, true);
@@ -37,7 +42,7 @@ Please star this library if you like it. :)
 		startActivityForResult(intent4, Constant.REQUEST_CODE_PICK_FILE);
 		break;
 		
-### 2.Receive the Result from Activity
+### 3.Receive the Result from Activity
     case Constant.REQUEST_CODE_PICK_IMAGE:
 		if (resultCode == RESULT_OK) {
             ArrayList<ImageFile> list = data.getParcelableArrayListExtra(Constant.RESULT_PICK_IMAGE);
@@ -58,6 +63,9 @@ Please star this library if you like it. :)
             ArrayList<NormalFile> list = data.getParcelableArrayListExtra(Constant.RESULT_PICK_FILE);
         }
         break;
+
+## Version Log
+1.0.0    Initial Version
 
 ## Thanks
 Inspired by [Android-FilePicker](https://github.com/DroidNinja/Android-FilePicker)
