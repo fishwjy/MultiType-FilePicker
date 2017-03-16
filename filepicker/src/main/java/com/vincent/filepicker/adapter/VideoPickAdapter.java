@@ -1,6 +1,7 @@
 package com.vincent.filepicker.adapter;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -81,7 +82,12 @@ public class VideoPickAdapter extends BaseAdapter<VideoFile, VideoPickAdapter.Vi
                     File file = new File(Environment.getExternalStoragePublicDirectory(DIRECTORY_DCIM).getAbsolutePath()
                             + "/VID_" + timeStamp + ".mp4");
                     mVideoPath = file.getAbsolutePath();
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
+
+                    ContentValues contentValues = new ContentValues(1);
+                    contentValues.put(MediaStore.Images.Media.DATA, mVideoPath);
+                    Uri uri = mContext.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
+
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
                     intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
                     ((Activity) mContext).startActivityForResult(intent, REQUEST_CODE_TAKE_VIDEO);
                 }
