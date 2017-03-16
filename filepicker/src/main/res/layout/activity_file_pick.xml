@@ -11,7 +11,7 @@
         android:background="@color/BgToolBar"
         android:theme="@style/ToolbarTheme"
         app:titleTextColor="#FFFFFF"
-        app:navigationIcon="@mipmap/ic_back" />
+        app:navigationIcon="@drawable/ic_back" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_file_pick"

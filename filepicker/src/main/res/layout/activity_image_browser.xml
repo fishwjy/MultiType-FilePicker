@@ -12,7 +12,7 @@
         android:background="@color/BgToolBar"
         android:theme="@style/ToolbarTheme"
         app:titleTextColor="#FFFFFF"
-        app:navigationIcon="@mipmap/ic_back" />
+        app:navigationIcon="@drawable/ic_back" />
 
     <RelativeLayout
         android:id="@+id/layout_bottom_bar"

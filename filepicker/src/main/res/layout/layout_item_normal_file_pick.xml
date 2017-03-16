@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginLeft="10dp"
-        android:src="@mipmap/ic_audio" />
+        android:src="@drawable/ic_audio" />
 
     <ImageView
         android:id="@+id/cbx"

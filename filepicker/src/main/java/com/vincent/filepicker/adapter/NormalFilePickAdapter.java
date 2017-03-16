@@ -60,17 +60,17 @@ public class NormalFilePickAdapter extends BaseAdapter<NormalFile, NormalFilePic
         }
 
         if (file.getPath().endsWith("xls") || file.getPath().endsWith("xlsx")) {
-            holder.mIvIcon.setImageResource(R.mipmap.ic_excel);
+            holder.mIvIcon.setImageResource(R.drawable.ic_excel);
         } else if (file.getPath().endsWith("doc") || file.getPath().endsWith("docx")){
-            holder.mIvIcon.setImageResource(R.mipmap.ic_word);
+            holder.mIvIcon.setImageResource(R.drawable.ic_word);
         } else if (file.getPath().endsWith("ppt") || file.getPath().endsWith("pptx")){
-            holder.mIvIcon.setImageResource(R.mipmap.ic_ppt);
+            holder.mIvIcon.setImageResource(R.drawable.ic_ppt);
         } else if (file.getPath().endsWith("pdf")){
-            holder.mIvIcon.setImageResource(R.mipmap.ic_pdf);
+            holder.mIvIcon.setImageResource(R.drawable.ic_pdf);
         } else if (file.getPath().endsWith("txt")){
-            holder.mIvIcon.setImageResource(R.mipmap.ic_txt);
+            holder.mIvIcon.setImageResource(R.drawable.ic_txt);
         } else {
-            holder.mIvIcon.setImageResource(R.mipmap.ic_file);
+            holder.mIvIcon.setImageResource(R.drawable.ic_file);
         }
 
         holder.mCbx.setOnClickListener(new View.OnClickListener() {
