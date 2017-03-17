@@ -66,7 +66,7 @@ public class Util {
 
     /**
      * Extract the file name in a URL
-     * /storage/emulated/legacy/Download/sample.pptx => sample.pptx
+     * /storage/emulated/legacy/Download/sample.pptx = sample.pptx
      *
      * @param url String of a URL
      * @return the file name of URL with suffix
@@ -77,7 +77,7 @@ public class Util {
 
     /**
      * Extract the file name in a URL
-     * /storage/emulated/legacy/Download/sample.pptx => sample
+     * /storage/emulated/legacy/Download/sample.pptx = sample
      *
      * @param url String of a URL
      * @return the file name of URL without suffix
@@ -93,7 +93,7 @@ public class Util {
 
     /**
      * Extract the path in a URL
-     * /storage/emulated/legacy/Download/sample.pptx => /storage/emulated/legacy/Download/
+     * /storage/emulated/legacy/Download/sample.pptx = /storage/emulated/legacy/Download/
      *
      * @param url String of a URL
      * @return the path of URL with the file separator
@@ -104,7 +104,7 @@ public class Util {
 
     /**
      * Extract the path in a URL
-     * /storage/emulated/legacy/Download/sample.pptx => /storage/emulated/legacy/Download
+     * /storage/emulated/legacy/Download/sample.pptx = /storage/emulated/legacy/Download
      *
      * @param url String of a URL
      * @return the path of URL without the file separator
@@ -115,7 +115,7 @@ public class Util {
 
     /**
      * Extract the suffix in a URL
-     * /storage/emulated/legacy/Download/sample.pptx => pptx
+     * /storage/emulated/legacy/Download/sample.pptx = pptx
      *
      * @param url String of a URL
      * @return the suffix of URL
