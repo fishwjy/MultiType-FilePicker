@@ -63,4 +63,16 @@ public class Util {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (pxValue / scale + 0.5f);
     }
+
+    public static String extractFileNameWithSuffix(String url) {
+        return url.substring(url.lastIndexOf("/") + 1);
+    }
+
+    public static String extractPath(String url) {
+        return url.substring(0, url.lastIndexOf("/") + 1);
+    }
+
+    public static String extractFileSuffix(String url) {
+        return url.substring(url.lastIndexOf(".") + 1);
+    }
 }

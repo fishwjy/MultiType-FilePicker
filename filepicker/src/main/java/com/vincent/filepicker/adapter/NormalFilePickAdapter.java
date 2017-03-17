@@ -44,7 +44,7 @@ public class NormalFilePickAdapter extends BaseAdapter<NormalFile, NormalFilePic
     public void onBindViewHolder(final NormalFilePickViewHolder holder, final int position) {
         final NormalFile file = mList.get(position);
 
-        holder.mTvTitle.setText(file.getName());
+        holder.mTvTitle.setText(Util.extractFileNameWithSuffix(file.getPath()));
         holder.mTvTitle.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
         if (holder.mTvTitle.getMeasuredWidth() >
                 Util.getScreenWidth(mContext) - Util.dip2px(mContext, 10 + 32 + 10 + 48 + 10 * 2)) {
