@@ -66,6 +66,7 @@ Please star this library if you like it. :)
 
 ## Version Log
 1.0.0    Initial Version
+1.0.1    Fix issue #8 and enhance URL extract
 
 ## Thanks
 Inspired by [Android-FilePicker](https://github.com/DroidNinja/Android-FilePicker)
