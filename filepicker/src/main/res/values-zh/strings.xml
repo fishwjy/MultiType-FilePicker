@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">FilePicker</string>
     <string name="confirm">确定</string>
     <string name="no_video_play_app">没有可用的视频播放应用</string>
     <string name="record_audio">录音</string>

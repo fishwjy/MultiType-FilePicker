@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">FilePicker</string>
     <string name="confirm">Done</string>
     <string name="no_video_play_app">No App exists for camera!</string>
     <string name="record_audio">Record Audio</string>

@@ -64,15 +64,67 @@ public class Util {
         return (int) (pxValue / scale + 0.5f);
     }
 
+    /**
+     * Extract the file name in a URL
+     * /storage/emulated/legacy/Download/sample.pptx => sample.pptx
+     *
+     * @param url String of a URL
+     * @return the file name of URL with suffix
+     */
     public static String extractFileNameWithSuffix(String url) {
         return url.substring(url.lastIndexOf("/") + 1);
     }
 
-    public static String extractPath(String url) {
+    /**
+     * Extract the file name in a URL
+     * /storage/emulated/legacy/Download/sample.pptx => sample
+     *
+     * @param url String of a URL
+     * @return the file name of URL without suffix
+     */
+    public static String extractFileNameWithoutSuffix(String url) {
+        try {
+            return url.substring(url.lastIndexOf("/") + 1, url.lastIndexOf("."));
+        } catch (StringIndexOutOfBoundsException e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    /**
+     * Extract the path in a URL
+     * /storage/emulated/legacy/Download/sample.pptx => /storage/emulated/legacy/Download/
+     *
+     * @param url String of a URL
+     * @return the path of URL with the file separator
+     */
+    public static String extractPathWithSeparator(String url) {
         return url.substring(0, url.lastIndexOf("/") + 1);
     }
 
+    /**
+     * Extract the path in a URL
+     * /storage/emulated/legacy/Download/sample.pptx => /storage/emulated/legacy/Download
+     *
+     * @param url String of a URL
+     * @return the path of URL without the file separator
+     */
+    public static String extractPathWithoutSeparator(String url) {
+        return url.substring(0, url.lastIndexOf("/"));
+    }
+
+    /**
+     * Extract the suffix in a URL
+     * /storage/emulated/legacy/Download/sample.pptx => pptx
+     *
+     * @param url String of a URL
+     * @return the suffix of URL
+     */
     public static String extractFileSuffix(String url) {
-        return url.substring(url.lastIndexOf(".") + 1);
+        if (url.contains(".")) {
+            return url.substring(url.lastIndexOf(".") + 1);
+        } else {
+            return "";
+        }
     }
 }

@@ -12,6 +12,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.text.TextUtils;
 
+import com.vincent.filepicker.Util;
 import com.vincent.filepicker.filter.entity.AudioFile;
 import com.vincent.filepicker.filter.entity.Directory;
 import com.vincent.filepicker.filter.entity.ImageFile;
@@ -29,6 +30,8 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static android.provider.BaseColumns._ID;
 import static android.provider.MediaStore.Files.FileColumns.MIME_TYPE;
@@ -60,6 +63,7 @@ public class FileLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor
     private int mType = TYPE_IMAGE;
     private String[] mSuffixArgs;
     private CursorLoader mLoader;
+    private String mSuffixRegex;
 
     public FileLoaderCallbacks(Context context, FilterResultCallback resultCallback, int type) {
         this(context, resultCallback, type, null);
@@ -70,6 +74,9 @@ public class FileLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor
         this.resultCallback = resultCallback;
         this.mType = type;
         this.mSuffixArgs = suffixArgs;
+        if (suffixArgs != null && suffixArgs.length > 0) {
+            mSuffixRegex = obtainSuffixRegex(suffixArgs);
+        }
     }
 
     @Override
@@ -141,7 +148,7 @@ public class FileLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor
             Directory<ImageFile> directory = new Directory<>();
             directory.setId(img.getBucketId());
             directory.setName(img.getBucketName());
-            directory.setPath(extractDirectory(img.getPath()));
+            directory.setPath(Util.extractPathWithoutSeparator(img.getPath()));
 
             if (!directories.contains(directory)) {
                 directory.addFile(img);
@@ -228,7 +235,7 @@ public class FileLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor
                     Directory<VideoFile> directory = new Directory<>();
                     directory.setId(video.getBucketId());
                     directory.setName(video.getBucketName());
-                    directory.setPath(extractDirectory(video.getPath()));
+                    directory.setPath(Util.extractPathWithoutSeparator(video.getPath()));
 
                     if (!directories.contains(directory)) {
                         directory.addFile(video);
@@ -272,8 +279,8 @@ public class FileLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor
 
             //Create a Directory
             Directory<AudioFile> directory = new Directory<>();
-            directory.setName(extractName(extractDirectory(audio.getPath())));
-            directory.setPath(extractDirectory(audio.getPath()));
+            directory.setName(Util.extractFileNameWithSuffix(Util.extractPathWithoutSeparator(audio.getPath())));
+            directory.setPath(Util.extractPathWithoutSeparator(audio.getPath()));
 
             if (!directories.contains(directory)) {
                 directory.addFile(audio);
@@ -298,7 +305,7 @@ public class FileLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor
 
         while (data.moveToNext()) {
             String path = data.getString(data.getColumnIndexOrThrow(DATA));
-            if (path != null && contains(mSuffixArgs, path)) {
+            if (path != null && contains(path)) {
                 //Create a File instance
                 NormalFile file = new NormalFile();
                 file.setId(data.getLong(data.getColumnIndexOrThrow(_ID)));
@@ -311,8 +318,8 @@ public class FileLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor
 
                 //Create a Directory
                 Directory<NormalFile> directory = new Directory<>();
-                directory.setName(extractName(extractDirectory(file.getPath())));
-                directory.setPath(extractDirectory(file.getPath()));
+                directory.setName(Util.extractFileNameWithSuffix(Util.extractPathWithoutSeparator(file.getPath())));
+                directory.setPath(Util.extractPathWithoutSeparator(file.getPath()));
 
                 if (!directories.contains(directory)) {
                     directory.addFile(file);
@@ -377,18 +384,23 @@ public class FileLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor
         return path;
     }
 
-    private String extractDirectory(String path) {
-        return path.substring(0, path.lastIndexOf("/"));
+    private boolean contains(String path) {
+        String name = Util.extractFileNameWithSuffix(path);
+        Pattern pattern = Pattern.compile(mSuffixRegex, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(name);
+        return matcher.matches();
     }
 
-    private String extractName(String path) {
-        return path.substring(path.lastIndexOf("/") + 1);
-    }
-
-    private boolean contains(String[] types, String path) {
-        for (String string : types) {
-            if (path.endsWith(string)) return true;
+    private String obtainSuffixRegex(String[] suffixes) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < suffixes.length ; i++) {
+            if (i ==0) {
+                builder.append(suffixes[i].replace(".", ""));
+            } else {
+                builder.append("|\\.");
+                builder.append(suffixes[i].replace(".", ""));
+            }
         }
-        return false;
+        return ".+(\\." + builder.toString() + ")$";
     }
 }
