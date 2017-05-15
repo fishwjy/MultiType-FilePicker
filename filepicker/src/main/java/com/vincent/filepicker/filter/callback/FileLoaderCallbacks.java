@@ -3,6 +3,7 @@ package com.vincent.filepicker.filter.callback;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.media.MediaMetadataRetriever;
 import android.media.ThumbnailUtils;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,6 +11,7 @@ import android.provider.MediaStore;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.util.TimeUtils;
 import android.text.TextUtils;
 
 import com.vincent.filepicker.Util;
@@ -30,6 +32,7 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -225,8 +228,9 @@ public class FileLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor
 
                         //If there is no thumbnail in DB, create one on external disk
                         if (TextUtils.isEmpty(video.getThumbnail())) {
-                            String path = saveBitmap(getVideoThumbnail(video.getPath(), 180, 180,
-                                    MediaStore.Images.Thumbnails.MINI_KIND), filePath);
+//                            String path = saveBitmap(getVideoThumbnail(video.getPath(), 180, 180,
+//                                    MediaStore.Images.Thumbnails.MINI_KIND), filePath);
+                            String path = saveBitmap(getVideoThumb(video.getPath()), filePath);
                             video.setThumbnail(path);
                         }
                     }
@@ -353,6 +357,25 @@ public class FileLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor
         bitmap = ThumbnailUtils.createVideoThumbnail(videoPath, kind);
         bitmap = ThumbnailUtils.extractThumbnail(bitmap, width, height,
                 ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
+        return bitmap;
+    }
+
+    private static Bitmap getVideoThumb(String filePath) {
+        Bitmap bitmap = null;
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        try {
+            retriever.setDataSource(filePath);
+            bitmap = retriever.getFrameAtTime(TimeUnit.MILLISECONDS.toMicros(1));
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                retriever.release();
+            } catch (RuntimeException e) {
+                e.printStackTrace();
+            }
+        }
+
         return bitmap;
     }
 
