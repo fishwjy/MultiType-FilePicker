@@ -71,6 +71,8 @@ Please star this library if you like it. :)
 
 1.0.2    Add resource prefix and update library version
 
+1.0.3    Modify fetching video thumbnail rule
+
 ## Thanks
 Inspired by [Android-FilePicker](https://github.com/DroidNinja/Android-FilePicker)
 
