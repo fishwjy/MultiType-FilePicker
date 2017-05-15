@@ -73,6 +73,8 @@ Please star this library if you like it. :)
 
 1.0.3    Modify fetching video thumbnail rule
 
+1.0.4    Fix "Attempted to access a cursor after it has been closed" in "onVideoResult"
+
 ## Thanks
 Inspired by [Android-FilePicker](https://github.com/DroidNinja/Android-FilePicker)
 

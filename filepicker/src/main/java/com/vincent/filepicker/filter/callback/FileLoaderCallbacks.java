@@ -178,6 +178,10 @@ public class FileLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
+                if (data.isClosed()) {
+                    return;
+                }
+
                 if (data.getPosition() != -1) {
                     data.moveToPosition(-1);
                 }

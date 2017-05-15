@@ -2,7 +2,7 @@ apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
 
-def prjVersion = "1.0.3"
+def prjVersion = "1.0.4"
 def prjGroup = "com.vincent.filepicker"
 def prjName = "MultiTypeFilePicker"
 def prjArtifactId = "MultiTypeFilePicker"
