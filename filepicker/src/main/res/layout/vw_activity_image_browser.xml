@@ -9,17 +9,17 @@
         android:id="@+id/tb_image_pick"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@color/BgToolBar"
-        android:theme="@style/ToolbarTheme"
+        android:background="@color/vw_BgToolBar"
+        android:theme="@style/vw_ToolbarTheme"
         app:titleTextColor="#FFFFFF"
-        app:navigationIcon="@drawable/ic_back" />
+        app:navigationIcon="@drawable/vw_ic_back" />
 
     <RelativeLayout
         android:id="@+id/layout_bottom_bar"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
-        android:background="@color/BgToolBar">
+        android:background="@color/vw_BgToolBar">
 
         <ImageView
             android:id="@+id/cbx"
@@ -28,7 +28,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
-            android:src="@drawable/selector_cbx" />
+            android:src="@drawable/vw_selector_cbx" />
     </RelativeLayout>
 
     <android.support.v4.view.ViewPager

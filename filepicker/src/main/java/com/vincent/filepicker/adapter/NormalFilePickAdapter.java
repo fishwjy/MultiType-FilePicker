@@ -36,7 +36,7 @@ public class NormalFilePickAdapter extends BaseAdapter<NormalFile, NormalFilePic
 
     @Override
     public NormalFilePickViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(mContext).inflate(R.layout.layout_item_normal_file_pick, parent, false);
+        View itemView = LayoutInflater.from(mContext).inflate(R.layout.vw_layout_item_normal_file_pick, parent, false);
         return new NormalFilePickViewHolder(itemView);
     }
 
@@ -60,24 +60,24 @@ public class NormalFilePickAdapter extends BaseAdapter<NormalFile, NormalFilePic
         }
 
         if (file.getPath().endsWith("xls") || file.getPath().endsWith("xlsx")) {
-            holder.mIvIcon.setImageResource(R.drawable.ic_excel);
+            holder.mIvIcon.setImageResource(R.drawable.vw_ic_excel);
         } else if (file.getPath().endsWith("doc") || file.getPath().endsWith("docx")){
-            holder.mIvIcon.setImageResource(R.drawable.ic_word);
+            holder.mIvIcon.setImageResource(R.drawable.vw_ic_word);
         } else if (file.getPath().endsWith("ppt") || file.getPath().endsWith("pptx")){
-            holder.mIvIcon.setImageResource(R.drawable.ic_ppt);
+            holder.mIvIcon.setImageResource(R.drawable.vw_ic_ppt);
         } else if (file.getPath().endsWith("pdf")){
-            holder.mIvIcon.setImageResource(R.drawable.ic_pdf);
+            holder.mIvIcon.setImageResource(R.drawable.vw_ic_pdf);
         } else if (file.getPath().endsWith("txt")){
-            holder.mIvIcon.setImageResource(R.drawable.ic_txt);
+            holder.mIvIcon.setImageResource(R.drawable.vw_ic_txt);
         } else {
-            holder.mIvIcon.setImageResource(R.drawable.ic_file);
+            holder.mIvIcon.setImageResource(R.drawable.vw_ic_file);
         }
 
         holder.mCbx.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!v.isSelected() && isUpToMax()) {
-                    ToastUtil.getInstance(mContext).showToast(R.string.up_to_max);
+                    ToastUtil.getInstance(mContext).showToast(R.string.vw_up_to_max);
                     return;
                 }
 

@@ -4,11 +4,11 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
 
-    <color name="BgToolBar">#373B3E</color>
-    <color name="BgRv">#191919</color>
-    <color name="BgItem">#353535</color>
+    <color name="vw_BgToolBar">#373B3E</color>
+    <color name="vw_BgRv">#191919</color>
+    <color name="vw_BgItem">#353535</color>
 
-    <color name="ShadowItem">#94333232</color>
+    <color name="vw_ShadowItem">#94333232</color>
 
-    <color name="BgRvFileDivider">#EEEEEE</color>
+    <color name="vw_BgRvFileDivider">#EEEEEE</color>
 </resources>

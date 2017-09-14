@@ -49,7 +49,7 @@ public abstract class BaseActivity extends AppCompatActivity implements EasyPerm
         if (isGranted) {
             permissionGranted();
         } else {
-            EasyPermissions.requestPermissions(this, getString(R.string.rationale_storage),
+            EasyPermissions.requestPermissions(this, getString(R.string.vw_rationale_storage),
                     RC_READ_EXTERNAL_STORAGE, "android.permission.READ_EXTERNAL_STORAGE");
         }
     }

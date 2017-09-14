@@ -1,13 +1,13 @@
 <resources>
 
-    <style name="FilePickerTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="vw_FilePickerTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
 
         <!-- 控制ToolBar右侧Menu弹出的位置 -->
-        <item name="actionOverflowMenuStyle">@style/OverflowMenuStyle</item>
+        <item name="actionOverflowMenuStyle">@style/vw_OverflowMenuStyle</item>
 
         <!-- 单独配置ToolBar右侧Menu按钮即三个小圆点的颜色 -->
         <!--<item name="colorControlNormal">#FFFFFF</item>-->
@@ -16,11 +16,11 @@
         <!--<item name="android:textColorPrimary">#FFFFFF</item>-->
 
         <!-- RecyclerView分割线 -->
-        <item name="android:listDivider">@drawable/divider_rv</item>
+        <item name="android:listDivider">@drawable/vw_divider_rv</item>
     </style>
 
     <!-- ToolBar菜单弹出样式 -->
-    <style name="OverflowMenuStyle" parent="@style/Widget.AppCompat.PopupMenu.Overflow">
+    <style name="vw_OverflowMenuStyle" parent="@style/Widget.AppCompat.PopupMenu.Overflow">
         <!-- 是否覆盖锚点，默认为true，即盖住Toolbar -->
         <item name="overlapAnchor">false</item>
         <!-- 弹出层背景颜色 -->
@@ -32,7 +32,7 @@
     </style>
 
     <!-- ToolBar菜单样式 -->
-    <style name="ToolbarTheme" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+    <style name="vw_ToolbarTheme" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
         <!-- 非溢出菜单字体颜色，想要修改溢出菜单内的字体颜色只能直接设置textColorPrimary但此选项会影响Title的颜色-->
         <!--<item name="actionMenuTextColor">#FFFFFF</item>-->
         <item name="android:textSize">16sp</item> <!-- 字体大小 -->

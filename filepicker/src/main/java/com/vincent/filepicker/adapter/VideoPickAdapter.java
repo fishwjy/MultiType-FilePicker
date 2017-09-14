@@ -56,7 +56,7 @@ public class VideoPickAdapter extends BaseAdapter<VideoFile, VideoPickAdapter.Vi
 
     @Override
     public VideoPickAdapter.VideoPickViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(mContext).inflate(R.layout.layout_item_video_pick, parent, false);
+        View itemView = LayoutInflater.from(mContext).inflate(R.layout.vw_layout_item_video_pick, parent, false);
         ViewGroup.LayoutParams params = itemView.getLayoutParams();
         if (params != null) {
             WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
@@ -123,7 +123,7 @@ public class VideoPickAdapter extends BaseAdapter<VideoFile, VideoPickAdapter.Vi
                 @Override
                 public void onClick(View v) {
                     if (!v.isSelected() && isUpToMax()) {
-                        ToastUtil.getInstance(mContext).showToast(R.string.up_to_max);
+                        ToastUtil.getInstance(mContext).showToast(R.string.vw_up_to_max);
                         return;
                     }
 

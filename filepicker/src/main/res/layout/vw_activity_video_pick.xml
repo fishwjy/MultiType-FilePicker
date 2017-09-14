@@ -5,26 +5,31 @@
     android:layout_height="match_parent">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/tb_image_pick"
+        android:id="@+id/tb_video_pick"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@color/BgToolBar"
-        android:theme="@style/ToolbarTheme"
+        android:background="@color/vw_BgToolBar"
+        android:theme="@style/vw_ToolbarTheme"
         app:titleTextColor="#FFFFFF"
-        app:navigationIcon="@drawable/ic_back" />
+        app:navigationIcon="@drawable/vw_ic_back" />
 
     <View
         android:id="@+id/rv_top_divider"
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:layout_below="@id/tb_image_pick"
-        android:background="@color/BgRv" />
+        android:layout_below="@id/tb_video_pick"
+        android:background="@color/vw_BgRv" />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_image_pick"
+        android:id="@+id/rv_video_pick"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/rv_top_divider"
-        android:background="@color/BgRv" />
+        android:background="@color/vw_BgRv" />
+
+    <ProgressBar android:id="@+id/pb_video_pick"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_centerInParent="true" />
 
 </RelativeLayout>

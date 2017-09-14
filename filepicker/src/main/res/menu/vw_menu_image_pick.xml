@@ -6,7 +6,7 @@
     <item
         android:id="@+id/action_done"
         android:orderInCategory="100"
-        android:title="@string/confirm"
+        android:title="@string/vw_confirm"
         app:showAsAction="ifRoom" />
 
 </menu>

@@ -50,7 +50,7 @@ public class ImagePickActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setContentView(R.layout.activity_image_pick);
+        setContentView(R.layout.vw_activity_image_pick);
 
         mMaxNumber = getIntent().getIntExtra(Constant.MAX_NUMBER, DEFAULT_MAX_NUMBER);
         isNeedCamera = getIntent().getBooleanExtra(IS_NEED_CAMERA, false);
@@ -162,7 +162,7 @@ public class ImagePickActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_image_pick, menu);
+        getMenuInflater().inflate(R.menu.vw_menu_image_pick, menu);
         return true;
     }
 

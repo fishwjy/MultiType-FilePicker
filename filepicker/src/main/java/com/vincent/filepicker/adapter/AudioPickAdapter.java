@@ -38,7 +38,7 @@ public class AudioPickAdapter extends BaseAdapter<AudioFile, AudioPickAdapter.Au
 
     @Override
     public AudioPickViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(mContext).inflate(R.layout.layout_item_audio_pick, parent, false);
+        View itemView = LayoutInflater.from(mContext).inflate(R.layout.vw_layout_item_audio_pick, parent, false);
         return new AudioPickViewHolder(itemView);
     }
 
@@ -66,7 +66,7 @@ public class AudioPickAdapter extends BaseAdapter<AudioFile, AudioPickAdapter.Au
             @Override
             public void onClick(View v) {
                 if (!v.isSelected() && isUpToMax()) {
-                    ToastUtil.getInstance(mContext).showToast(R.string.up_to_max);
+                    ToastUtil.getInstance(mContext).showToast(R.string.vw_up_to_max);
                     return;
                 }
 

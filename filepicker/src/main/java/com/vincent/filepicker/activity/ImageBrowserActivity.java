@@ -54,7 +54,7 @@ public class ImageBrowserActivity extends BaseActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        setContentView(R.layout.activity_image_browser);
+        setContentView(R.layout.vw_activity_image_browser);
 
         mMaxNumber = getIntent().getIntExtra(Constant.MAX_NUMBER, DEFAULT_MAX_NUMBER);
         initIndex = getIntent().getIntExtra(IMAGE_BROWSER_INIT_INDEX, 0);
@@ -82,7 +82,7 @@ public class ImageBrowserActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 if (!v.isSelected() && isUpToMax()) {
-                    ToastUtil.getInstance(ImageBrowserActivity.this).showToast(R.string.up_to_max);
+                    ToastUtil.getInstance(ImageBrowserActivity.this).showToast(R.string.vw_up_to_max);
                     return;
                 }
 
@@ -180,7 +180,7 @@ public class ImageBrowserActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_image_pick, menu);
+        getMenuInflater().inflate(R.menu.vw_menu_image_pick, menu);
         return true;
     }
 

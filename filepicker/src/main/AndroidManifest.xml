@@ -11,24 +11,24 @@
         <activity
             android:name=".activity.ImagePickActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/FilePickerTheme" />
+            android:theme="@style/vw_FilePickerTheme" />
 
         <activity android:name=".activity.ImageBrowserActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/FilePickerTheme"
+            android:theme="@style/vw_FilePickerTheme"
             android:hardwareAccelerated="false" />
 
         <activity android:name=".activity.VideoPickActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/FilePickerTheme" />
+            android:theme="@style/vw_FilePickerTheme" />
 
         <activity android:name=".activity.AudioPickActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/FilePickerTheme" />
+            android:theme="@style/vw_FilePickerTheme" />
 
         <activity android:name=".activity.NormalFilePickActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/FilePickerTheme" />
+            android:theme="@style/vw_FilePickerTheme" />
 
     </application>
 

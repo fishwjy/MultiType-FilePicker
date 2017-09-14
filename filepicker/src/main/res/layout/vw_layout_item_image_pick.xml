@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/BgItem">
+    android:background="@color/vw_BgItem">
 
     <ImageView
         android:id="@+id/iv_thumbnail"
@@ -15,14 +15,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:src="@drawable/ic_camera"
+        android:src="@drawable/vw_ic_camera"
         android:visibility="invisible" />
 
     <View
         android:id="@+id/shadow"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/ShadowItem"
+        android:background="@color/vw_ShadowItem"
         android:visibility="invisible" />
 
     <ImageView
@@ -32,6 +32,6 @@
         android:layout_alignParentRight="true"
         android:layout_marginRight="5dp"
         android:layout_marginTop="5dp"
-        android:src="@drawable/selector_cbx" />
+        android:src="@drawable/vw_selector_cbx" />
 
 </RelativeLayout>
