@@ -75,6 +75,8 @@ Please star this library if you like it. :)
 
 1.0.4    Fix "Attempted to access a cursor after it has been closed" in "onVideoResult"
 
+1.0.5    Use Glide to load video thumbnail, delete record in Media DB when user cancel taking photo and add prefix to resources
+
 ## Thanks
 Inspired by [Android-FilePicker](https://github.com/DroidNinja/Android-FilePicker)
 
