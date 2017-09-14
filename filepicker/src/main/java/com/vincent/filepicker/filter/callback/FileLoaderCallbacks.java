@@ -6,13 +6,9 @@ import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
 import android.media.ThumbnailUtils;
 import android.os.Bundle;
-import android.os.Handler;
-import android.provider.MediaStore;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v4.util.TimeUtils;
-import android.text.TextUtils;
 
 import com.vincent.filepicker.Util;
 import com.vincent.filepicker.filter.entity.AudioFile;
@@ -46,7 +42,6 @@ import static android.provider.MediaStore.MediaColumns.DATE_ADDED;
 import static android.provider.MediaStore.MediaColumns.SIZE;
 import static android.provider.MediaStore.MediaColumns.TITLE;
 import static android.provider.MediaStore.Video.VideoColumns.DURATION;
-import static com.vincent.filepicker.activity.VideoPickActivity.THUMBNAIL_PATH;
 
 /**
  * Created by Vincent Woo
@@ -166,104 +161,44 @@ public class FileLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor
         }
     }
 
-    private static final String[] thumbColumns = new String[]{
-            MediaStore.Video.Thumbnails.DATA,
-            MediaStore.Video.Thumbnails.VIDEO_ID
-    };
-
     @SuppressWarnings("unchecked")
     private void onVideoResult(final Cursor data) {
-        final Handler handler = new Handler();
-        final List<Directory<VideoFile>> directories = new ArrayList<>();
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                if (data.isClosed()) {
-                    return;
-                }
+        List<Directory<VideoFile>> directories = new ArrayList<>();
 
-                if (data.getPosition() != -1) {
-                    data.moveToPosition(-1);
-                }
+        if (data.getPosition() != -1) {
+            data.moveToPosition(-1);
+        }
 
-                while (data.moveToNext()) {
-                    //Create a File instance
-                    VideoFile video = new VideoFile();
-                    video.setId(data.getLong(data.getColumnIndexOrThrow(_ID)));
-                    video.setName(data.getString(data.getColumnIndexOrThrow(TITLE)));
-                    video.setPath(data.getString(data.getColumnIndexOrThrow(DATA)));
-                    video.setSize(data.getLong(data.getColumnIndexOrThrow(SIZE)));
-                    video.setBucketId(data.getString(data.getColumnIndexOrThrow(BUCKET_ID)));
-                    video.setBucketName(data.getString(data.getColumnIndexOrThrow(BUCKET_DISPLAY_NAME)));
-                    video.setDate(data.getLong(data.getColumnIndexOrThrow(DATE_ADDED)));
+        while (data.moveToNext()) {
+            //Create a File instance
+            VideoFile video = new VideoFile();
+            video.setId(data.getLong(data.getColumnIndexOrThrow(_ID)));
+            video.setName(data.getString(data.getColumnIndexOrThrow(TITLE)));
+            video.setPath(data.getString(data.getColumnIndexOrThrow(DATA)));
+            video.setSize(data.getLong(data.getColumnIndexOrThrow(SIZE)));
+            video.setBucketId(data.getString(data.getColumnIndexOrThrow(BUCKET_ID)));
+            video.setBucketName(data.getString(data.getColumnIndexOrThrow(BUCKET_DISPLAY_NAME)));
+            video.setDate(data.getLong(data.getColumnIndexOrThrow(DATE_ADDED)));
 
-                    video.setDuration(data.getLong(data.getColumnIndexOrThrow(DURATION)));
+            video.setDuration(data.getLong(data.getColumnIndexOrThrow(DURATION)));
 
-                    //Query Thumbnail
-                    File folder = new File(context.get().getExternalCacheDir().getAbsolutePath()
-                            + File.separator + THUMBNAIL_PATH);
-                    if (!folder.exists()) {
-                        folder.mkdirs();
-                    }
+            //Create a Directory
+            Directory<VideoFile> directory = new Directory<>();
+            directory.setId(video.getBucketId());
+            directory.setName(video.getBucketName());
+            directory.setPath(Util.extractPathWithoutSeparator(video.getPath()));
 
-                    String filePath = context.get().getExternalCacheDir().getAbsolutePath()
-                            + File.separator + THUMBNAIL_PATH + File.separator
-                            + video.getId() + ".png";
-                    File file = new File(filePath);
-                    if (file.exists()) {
-                        video.setThumbnail(filePath);
-                    } else {
-                        String selection = MediaStore.Video.Thumbnails.VIDEO_ID + "=?";
-                        String[] selectionArgs = new String[]{video.getId() + ""};
-                        final Cursor thumbCursor = context.get().getContentResolver().query(
-                                MediaStore.Video.Thumbnails.EXTERNAL_CONTENT_URI,
-                                thumbColumns,
-                                selection,
-                                selectionArgs,
-                                null);
-                        if (thumbCursor != null && thumbCursor.moveToFirst()) {
-                            String thumbnail = thumbCursor.getString(
-                                    thumbCursor.getColumnIndexOrThrow(MediaStore.Video.Thumbnails.DATA));
-                            video.setThumbnail(thumbnail);
-                        }
-                        if (thumbCursor != null) {
-                            thumbCursor.close();
-                        }
-
-                        //If there is no thumbnail in DB, create one on external disk
-                        if (TextUtils.isEmpty(video.getThumbnail())) {
-//                            String path = saveBitmap(getVideoThumbnail(video.getPath(), 180, 180,
-//                                    MediaStore.Images.Thumbnails.MINI_KIND), filePath);
-                            String path = saveBitmap(getVideoThumb(video.getPath()), filePath);
-                            video.setThumbnail(path);
-                        }
-                    }
-
-                    //Create a Directory
-                    Directory<VideoFile> directory = new Directory<>();
-                    directory.setId(video.getBucketId());
-                    directory.setName(video.getBucketName());
-                    directory.setPath(Util.extractPathWithoutSeparator(video.getPath()));
-
-                    if (!directories.contains(directory)) {
-                        directory.addFile(video);
-                        directories.add(directory);
-                    } else {
-                        directories.get(directories.indexOf(directory)).addFile(video);
-                    }
-                }
-
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (resultCallback != null) {
-                            resultCallback.onResult(directories);
-                        }
-                    }
-                });
+            if (!directories.contains(directory)) {
+                directory.addFile(video);
+                directories.add(directory);
+            } else {
+                directories.get(directories.indexOf(directory)).addFile(video);
             }
-        });
-        thread.start();
+        }
+
+        if (resultCallback != null) {
+            resultCallback.onResult(directories);
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -341,74 +276,6 @@ public class FileLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor
         if (resultCallback != null) {
             resultCallback.onResult(directories);
         }
-    }
-
-    /**
-     * 获取视频的缩略图
-     * 先通过ThumbnailUtils来创建一个视频的缩略图，然后再利用ThumbnailUtils来生成指定大小的缩略图。
-     * 如果想要的缩略图的宽和高都小于MICRO_KIND，则类型要使用MICRO_KIND作为kind的值，这样会节省内存。
-     *
-     * @param videoPath 视频的路径
-     * @param width     指定输出视频缩略图的宽度
-     * @param height    指定输出视频缩略图的高度度
-     * @param kind      参照MediaStore.Images.Thumbnails类中的常量MINI_KIND和MICRO_KIND。
-     *                  其中，MINI_KIND: 512 x 384，MICRO_KIND: 96 x 96
-     * @return 指定大小的视频缩略图
-     */
-    private Bitmap getVideoThumbnail(String videoPath, int width, int height, int kind) {
-        Bitmap bitmap = null;
-        // 获取视频的缩略图
-        bitmap = ThumbnailUtils.createVideoThumbnail(videoPath, kind);
-        bitmap = ThumbnailUtils.extractThumbnail(bitmap, width, height,
-                ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
-        return bitmap;
-    }
-
-    private static Bitmap getVideoThumb(String filePath) {
-        Bitmap bitmap = null;
-        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-        try {
-            retriever.setDataSource(filePath);
-            bitmap = retriever.getFrameAtTime(TimeUnit.MILLISECONDS.toMicros(1));
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                retriever.release();
-            } catch (RuntimeException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return bitmap;
-    }
-
-    private String saveBitmap(Bitmap bitmap, String pathName) {
-        if (bitmap == null) {
-            return "";
-        }
-
-        String path = "";
-//        String pathName = context.get().getExternalCacheDir().getAbsolutePath() + "/" + String.valueOf(System.currentTimeMillis()) + ".png";
-        File f = new File(pathName);
-        if (f.exists()) {
-            f.delete();
-        }
-        try {
-            FileOutputStream out = new FileOutputStream(f);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
-            out.flush();
-            out.close();
-            path = pathName;
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        return path;
     }
 
     private boolean contains(String path) {

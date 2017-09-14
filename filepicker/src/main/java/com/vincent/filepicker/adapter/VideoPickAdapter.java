@@ -106,7 +106,7 @@ public class VideoPickAdapter extends BaseAdapter<VideoFile, VideoPickAdapter.Vi
             }
 
             Glide.with(mContext)
-                    .load(file.getThumbnail())
+                    .load(file.getPath())
                     .centerCrop()
                     .crossFade()
                     .into(holder.mIvThumbnail);

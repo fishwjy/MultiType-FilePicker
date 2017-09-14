@@ -105,6 +105,9 @@ public class ImagePickActivity extends BaseActivity {
                     sendBroadcast(mediaScanIntent);
 
                     loadData();
+                } else {
+                    //Delete the record in Media DB, when user select "Cancel" during take picture
+                    getApplicationContext().getContentResolver().delete(mAdapter.mImageUri, null, null);
                 }
                 break;
             case Constant.REQUEST_CODE_BROWSER_IMAGE:

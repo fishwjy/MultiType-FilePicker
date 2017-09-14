@@ -43,6 +43,7 @@ public class ImagePickAdapter extends BaseAdapter<ImageFile, ImagePickAdapter.Im
     private int mMaxNumber;
     private int mCurrentNumber = 0;
     public String mImagePath;
+    public Uri mImageUri;
 
     public ImagePickAdapter(Context ctx, boolean needCamera, int max) {
         this(ctx, new ArrayList<ImageFile>(), needCamera, max);
@@ -84,9 +85,9 @@ public class ImagePickAdapter extends BaseAdapter<ImageFile, ImagePickAdapter.Im
 
                     ContentValues contentValues = new ContentValues(1);
                     contentValues.put(MediaStore.Images.Media.DATA, mImagePath);
-                    Uri uri = mContext.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,contentValues);
+                    mImageUri = mContext.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,contentValues);
 
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
                     ((Activity) mContext).startActivityForResult(intent, Constant.REQUEST_CODE_TAKE_IMAGE);
                 }
             });
