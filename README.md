@@ -1,9 +1,14 @@
 # MultiType-FilePicker
-[![Download](https://api.bintray.com/packages/vincentwoo/maven/MultiTypeFilePicker/images/download.svg) ](https://bintray.com/vincentwoo/maven/MultiTypeFilePicker/_latestVersion)
+[![](https://jitpack.io/v/AlonShahaf/MultiType-FilePicker.svg)](https://jitpack.io/#AlonShahaf/MultiType-FilePicker)
 
-This is a light Android file picker library.
+This is a fork of the light Android file picker library from https://github.com/fishwjy/MultiType-FilePicker.
+I've just added some UX improvments to the original library:
+1. Option to disable images pager, and allowing to select images by tapping it (original version allows checking through checkbox only).
+2. Option to auto-select images taken by the camera.
 
-Please star this library if you like it. :)
+Check the first example for usage.
+
+Please star the original library if you like it. :)
 
 ## Demo
 ![Demo](/pic/pick_img.gif)
@@ -20,6 +25,8 @@ Please star this library if you like it. :)
     case R.id.btn_pick_image:
 		Intent intent1 = new Intent(this, ImagePickActivity.class);
 		intent1.putExtra(IS_NEED_CAMERA, true);
+		intent1.putExtra(IS_NEED_IMAGE_PAGER, false);	// image paging is disabled, clicking on images will select/deselect
+                intent1.putExtra(IS_TAKEN_AUTO_SELECTED, true);	// image will be selected after taken 	
 		intent1.putExtra(Constant.MAX_NUMBER, 9);
 		startActivityForResult(intent1, Constant.REQUEST_CODE_PICK_IMAGE);
 		break;
