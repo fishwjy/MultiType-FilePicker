@@ -119,7 +119,11 @@ public class AudioPickAdapter extends BaseAdapter<AudioFile, AudioPickAdapter.Au
         }
     }
 
-    private boolean isUpToMax() {
+    public boolean isUpToMax() {
         return mCurrentNumber >= mMaxNumber;
+    }
+
+    public void setCurrentNumber(int number) {
+        mCurrentNumber = number;
     }
 }

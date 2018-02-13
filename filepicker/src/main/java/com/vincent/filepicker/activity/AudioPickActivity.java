@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +22,7 @@ import com.vincent.filepicker.filter.callback.FilterResultCallback;
 import com.vincent.filepicker.filter.entity.AudioFile;
 import com.vincent.filepicker.filter.entity.Directory;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +34,7 @@ import java.util.List;
 
 public class AudioPickActivity extends BaseActivity {
     public static final String IS_NEED_RECORDER = "IsNeedRecorder";
+    public static final String IS_TAKEN_AUTO_SELECTED = "IsTakenAutoSelected";
 
     public static final int DEFAULT_MAX_NUMBER = 9;
     private int mMaxNumber;
@@ -40,7 +43,9 @@ public class AudioPickActivity extends BaseActivity {
     private RecyclerView mRecyclerView;
     private AudioPickAdapter mAdapter;
     private boolean isNeedRecorder;
+    private boolean isTakenAutoSelected;
     private ArrayList<AudioFile> mSelectedList = new ArrayList<>();
+    private String mAudioPath;
 
     @Override
     void permissionGranted() {
@@ -53,6 +58,7 @@ public class AudioPickActivity extends BaseActivity {
 
         mMaxNumber = getIntent().getIntExtra(Constant.MAX_NUMBER, DEFAULT_MAX_NUMBER);
         isNeedRecorder = getIntent().getBooleanExtra(IS_NEED_RECORDER, false);
+        isTakenAutoSelected = getIntent().getBooleanExtra(IS_TAKEN_AUTO_SELECTED, true);
         initView();
 
         super.onCreate(savedInstanceState);
@@ -96,9 +102,22 @@ public class AudioPickActivity extends BaseActivity {
         FileFilter.getAudios(this, new FilterResultCallback<AudioFile>() {
             @Override
             public void onResult(List<Directory<AudioFile>> directories) {
+                boolean tryToFindTaken = isTakenAutoSelected;
+
+                // if auto-select taken file is enabled, make sure requirements are met
+                if (tryToFindTaken && !TextUtils.isEmpty(mAudioPath)) {
+                    File takenFile = new File(mAudioPath);
+                    tryToFindTaken = !mAdapter.isUpToMax() && takenFile.exists(); // try to select taken file only if max isn't reached and the file exists
+                }
+
                 List<AudioFile> list = new ArrayList<>();
                 for (Directory<AudioFile> directory : directories) {
                     list.addAll(directory.getFiles());
+
+                    // auto-select taken file?
+                    if (tryToFindTaken) {
+                        tryToFindTaken = findAndAddTaken(directory.getFiles());   // if taken file was found, we're done
+                    }
                 }
 
                 for (AudioFile file : mSelectedList) {
@@ -107,10 +126,23 @@ public class AudioPickActivity extends BaseActivity {
                         list.get(index).setSelected(true);
                     }
                 }
-
                 mAdapter.refresh(list);
             }
         });
+    }
+
+    private boolean findAndAddTaken(List<AudioFile> list) {
+        for (AudioFile audioFile : list) {
+            if (audioFile.getPath().equals(mAudioPath)) {
+                mSelectedList.add(audioFile);
+                mCurrentNumber++;
+                mAdapter.setCurrentNumber(mCurrentNumber);
+                mTbImagePick.setTitle(mCurrentNumber + "/" + mMaxNumber);
+
+                return true;   // taken file was found and added
+            }
+        }
+        return false;    // taken file wasn't found
     }
 
     @Override
@@ -119,6 +151,9 @@ public class AudioPickActivity extends BaseActivity {
         switch (requestCode) {
             case Constant.REQUEST_CODE_TAKE_AUDIO:
                 if (resultCode == RESULT_OK) {
+                    if (data.getData() != null) {
+                        mAudioPath = data.getData().getPath();
+                    }
                     loadData();
                 }
                 break;

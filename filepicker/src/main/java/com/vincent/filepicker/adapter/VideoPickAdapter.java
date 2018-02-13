@@ -188,8 +188,11 @@ public class VideoPickAdapter extends BaseAdapter<VideoFile, VideoPickAdapter.Vi
         }
     }
 
-    private boolean isUpToMax() {
+    public boolean isUpToMax() {
         return mCurrentNumber >= mMaxNumber;
     }
 
+    public void setCurrentNumber(int number) {
+        mCurrentNumber = number;
+    }
 }

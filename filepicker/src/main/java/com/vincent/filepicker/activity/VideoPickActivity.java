@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,8 +35,8 @@ import java.util.List;
 
 public class VideoPickActivity extends BaseActivity {
     public static final String THUMBNAIL_PATH = "FilePick";
-
     public static final String IS_NEED_CAMERA = "IsNeedCamera";
+    public static final String IS_TAKEN_AUTO_SELECTED = "IsTakenAutoSelected";
 
     public static final int DEFAULT_MAX_NUMBER = 9;
     public static final int COLUMN_NUMBER = 3;
@@ -45,6 +46,7 @@ public class VideoPickActivity extends BaseActivity {
     private RecyclerView mRecyclerView;
     private VideoPickAdapter mAdapter;
     private boolean isNeedCamera;
+    private boolean isTakenAutoSelected;
     private ArrayList<VideoFile> mSelectedList = new ArrayList<>();
     private ProgressBar mProgressBar;
 
@@ -59,6 +61,7 @@ public class VideoPickActivity extends BaseActivity {
 
         mMaxNumber = getIntent().getIntExtra(Constant.MAX_NUMBER, DEFAULT_MAX_NUMBER);
         isNeedCamera = getIntent().getBooleanExtra(IS_NEED_CAMERA, false);
+        isTakenAutoSelected = getIntent().getBooleanExtra(IS_TAKEN_AUTO_SELECTED, true);
         initView();
 
         super.onCreate(savedInstanceState);
@@ -129,9 +132,22 @@ public class VideoPickActivity extends BaseActivity {
             @Override
             public void onResult(List<Directory<VideoFile>> directories) {
                 mProgressBar.setVisibility(View.GONE);
+                boolean tryToFindTaken = isTakenAutoSelected;
+
+                // if auto-select taken file is enabled, make sure requirements are met
+                if (tryToFindTaken && !TextUtils.isEmpty(mAdapter.mVideoPath)) {
+                    File takenFile = new File(mAdapter.mVideoPath);
+                    tryToFindTaken = !mAdapter.isUpToMax() && takenFile.exists(); // try to select taken file only if max isn't reached and the file exists
+                }
+
                 List<VideoFile> list = new ArrayList<>();
                 for (Directory<VideoFile> directory : directories) {
                     list.addAll(directory.getFiles());
+
+                    // auto-select taken file?
+                    if (tryToFindTaken) {
+                        tryToFindTaken = findAndAddTaken(directory.getFiles());   // if taken file was found, we're done
+                    }
                 }
 
                 for (VideoFile file : mSelectedList) {
@@ -140,10 +156,23 @@ public class VideoPickActivity extends BaseActivity {
                         list.get(index).setSelected(true);
                     }
                 }
-
                 mAdapter.refresh(list);
             }
         });
+    }
+
+    private boolean findAndAddTaken(List<VideoFile> list) {
+        for (VideoFile videoFile : list) {
+            if (videoFile.getPath().equals(mAdapter.mVideoPath)) {
+                mSelectedList.add(videoFile);
+                mCurrentNumber++;
+                mAdapter.setCurrentNumber(mCurrentNumber);
+                mTbImagePick.setTitle(mCurrentNumber + "/" + mMaxNumber);
+
+                return true;   // taken file was found and added
+            }
+        }
+        return false;    // taken file wasn't found
     }
 
     @Override
