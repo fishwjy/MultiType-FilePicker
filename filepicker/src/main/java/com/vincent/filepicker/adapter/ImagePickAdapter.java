@@ -39,20 +39,22 @@ import static com.vincent.filepicker.activity.ImageBrowserActivity.IMAGE_BROWSER
  */
 
 public class ImagePickAdapter extends BaseAdapter<ImageFile, ImagePickAdapter.ImagePickViewHolder> {
+    private boolean isNeedImagePager;
     private boolean isNeedCamera;
     private int mMaxNumber;
     private int mCurrentNumber = 0;
     public String mImagePath;
     public Uri mImageUri;
 
-    public ImagePickAdapter(Context ctx, boolean needCamera, int max) {
-        this(ctx, new ArrayList<ImageFile>(), needCamera, max);
+    public ImagePickAdapter(Context ctx, boolean needCamera, boolean isNeedImagePager, int max) {
+        this(ctx, new ArrayList<ImageFile>(), needCamera, isNeedImagePager, max);
     }
 
-    public ImagePickAdapter(Context ctx, ArrayList<ImageFile> list, boolean needCamera, int max) {
+    public ImagePickAdapter(Context ctx, ArrayList<ImageFile> list, boolean needCamera, boolean needImagePager, int max) {
         super(ctx, list);
         isNeedCamera = needCamera;
         mMaxNumber = max;
+        isNeedImagePager = needImagePager;
     }
 
     @Override
@@ -143,17 +145,46 @@ public class ImagePickAdapter extends BaseAdapter<ImageFile, ImagePickAdapter.Im
                 }
             });
 
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(mContext, ImageBrowserActivity.class);
-                    intent.putExtra(Constant.MAX_NUMBER, mMaxNumber);
-                    intent.putExtra(IMAGE_BROWSER_INIT_INDEX,
-                            isNeedCamera ? holder.getAdapterPosition() - 1 : holder.getAdapterPosition());
-                    intent.putParcelableArrayListExtra(IMAGE_BROWSER_SELECTED_LIST, ((ImagePickActivity) mContext).mSelectedList);
-                    ((Activity) mContext).startActivityForResult(intent, Constant.REQUEST_CODE_BROWSER_IMAGE);
-                }
-            });
+            if (isNeedImagePager) {
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(mContext, ImageBrowserActivity.class);
+                        intent.putExtra(Constant.MAX_NUMBER, mMaxNumber);
+                        intent.putExtra(IMAGE_BROWSER_INIT_INDEX,
+                                isNeedCamera ? holder.getAdapterPosition() - 1 : holder.getAdapterPosition());
+                        intent.putParcelableArrayListExtra(IMAGE_BROWSER_SELECTED_LIST, ((ImagePickActivity) mContext).mSelectedList);
+                        ((Activity) mContext).startActivityForResult(intent, Constant.REQUEST_CODE_BROWSER_IMAGE);
+                    }
+                });
+            } else {
+                holder.mIvThumbnail.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (!holder.mCbx.isSelected() && isUpToMax()) {
+                            ToastUtil.getInstance(mContext).showToast(R.string.vw_up_to_max);
+                            return;
+                        }
+
+                        int index = isNeedCamera ? holder.getAdapterPosition() - 1 : holder.getAdapterPosition();
+                        if (holder.mCbx.isSelected()) {
+                            holder.mShadow.setVisibility(View.INVISIBLE);
+                            holder.mCbx.setSelected(false);
+                            mCurrentNumber--;
+                            mList.get(index).setSelected(false);
+                        } else {
+                            holder.mShadow.setVisibility(View.VISIBLE);
+                            holder.mCbx.setSelected(true);
+                            mCurrentNumber++;
+                            mList.get(index).setSelected(true);
+                        }
+
+                        if (mListener != null) {
+                            mListener.OnSelectStateChanged(holder.mCbx.isSelected(), mList.get(index));
+                        }
+                    }
+                });
+            }
         }
     }
 
@@ -177,7 +208,7 @@ public class ImagePickAdapter extends BaseAdapter<ImageFile, ImagePickAdapter.Im
         }
     }
 
-    private boolean isUpToMax() {
+    public boolean isUpToMax() {
         return mCurrentNumber >= mMaxNumber;
     }
 
