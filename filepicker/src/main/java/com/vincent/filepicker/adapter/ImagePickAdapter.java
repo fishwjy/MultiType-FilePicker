@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide;
 import com.vincent.filepicker.Constant;
 import com.vincent.filepicker.R;
 import com.vincent.filepicker.ToastUtil;
+import com.vincent.filepicker.Util;
 import com.vincent.filepicker.activity.ImageBrowserActivity;
 import com.vincent.filepicker.activity.ImagePickActivity;
 import com.vincent.filepicker.filter.entity.ImageFile;
@@ -90,7 +91,11 @@ public class ImagePickAdapter extends BaseAdapter<ImageFile, ImagePickAdapter.Im
                     mImageUri = mContext.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,contentValues);
 
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
-                    ((Activity) mContext).startActivityForResult(intent, Constant.REQUEST_CODE_TAKE_IMAGE);
+                    if (Util.detectIntent(mContext, intent)) {
+                        ((Activity) mContext).startActivityForResult(intent, Constant.REQUEST_CODE_TAKE_IMAGE);
+                    } else {
+                        ToastUtil.getInstance(mContext).showToast(mContext.getString(R.string.vw_no_photo_app));
+                    }
                 }
             });
         } else {

@@ -5,4 +5,8 @@
     <string name="vw_record_audio">录音</string>
     <string name="vw_rationale_storage">需要读取存储权限以提供文件选择功能</string>
     <string name="vw_up_to_max">已达到选择上限</string>
+    <string name="vw_no_photo_app">没有可用的拍照应用</string>
+    <string name="vw_no_audio_play_app">没有可用的音频播放应用</string>
+    <string name="vw_no_video_app">没有可用的视频录制应用</string>
+    <string name="vw_no_audio_app">没有可用的音频录制应用</string>
 </resources>

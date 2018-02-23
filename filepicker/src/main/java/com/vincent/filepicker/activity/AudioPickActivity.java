@@ -15,6 +15,8 @@ import android.view.View;
 import com.vincent.filepicker.Constant;
 import com.vincent.filepicker.DividerListItemDecoration;
 import com.vincent.filepicker.R;
+import com.vincent.filepicker.ToastUtil;
+import com.vincent.filepicker.Util;
 import com.vincent.filepicker.adapter.AudioPickAdapter;
 import com.vincent.filepicker.adapter.OnSelectStateListener;
 import com.vincent.filepicker.filter.FileFilter;
@@ -178,7 +180,11 @@ public class AudioPickActivity extends BaseActivity {
             return true;
         } else if(id == R.id.action_record) {
             Intent intent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
-            startActivityForResult(intent, Constant.REQUEST_CODE_TAKE_AUDIO);
+            if (Util.detectIntent(this, intent)) {
+                startActivityForResult(intent, Constant.REQUEST_CODE_TAKE_AUDIO);
+            } else {
+                ToastUtil.getInstance(this).showToast(getString(R.string.vw_no_audio_app));
+            }
             return true;
         }
 

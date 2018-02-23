@@ -95,7 +95,7 @@ public class AudioPickAdapter extends BaseAdapter<AudioFile, AudioPickAdapter.Au
                 if (Util.detectIntent(mContext, intent)) {
                     mContext.startActivity(intent);
                 } else {
-                    ToastUtil.getInstance(mContext).showToast("No Application exists for audio!");
+                    ToastUtil.getInstance(mContext).showToast(mContext.getString(R.string.vw_no_audio_play_app));
                 }
             }
         });

@@ -89,7 +89,11 @@ public class VideoPickAdapter extends BaseAdapter<VideoFile, VideoPickAdapter.Vi
 
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
                     intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
-                    ((Activity) mContext).startActivityForResult(intent, REQUEST_CODE_TAKE_VIDEO);
+                    if (Util.detectIntent(mContext, intent)) {
+                        ((Activity) mContext).startActivityForResult(intent, REQUEST_CODE_TAKE_VIDEO);
+                    } else {
+                        ToastUtil.getInstance(mContext).showToast(mContext.getString(R.string.vw_no_video_app));
+                    }
                 }
             });
         } else {
@@ -155,7 +159,7 @@ public class VideoPickAdapter extends BaseAdapter<VideoFile, VideoPickAdapter.Vi
                     if (Util.detectIntent(mContext, intent)) {
                         mContext.startActivity(intent);
                     } else {
-                        ToastUtil.getInstance(mContext).showToast("No Application exists for camera!");
+                        ToastUtil.getInstance(mContext).showToast(mContext.getString(R.string.vw_no_video_play_app));
                     }
                 }
             });
