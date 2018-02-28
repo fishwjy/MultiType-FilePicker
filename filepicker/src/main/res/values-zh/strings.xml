@@ -9,4 +9,5 @@
     <string name="vw_no_audio_play_app">没有可用的音频播放应用</string>
     <string name="vw_no_video_app">没有可用的视频录制应用</string>
     <string name="vw_no_audio_app">没有可用的音频录制应用</string>
+    <string name="vw_all">全部</string>
 </resources>

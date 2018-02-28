@@ -5,15 +5,16 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.vincent.filepicker.Constant;
 import com.vincent.filepicker.DividerGridItemDecoration;
 import com.vincent.filepicker.R;
+import com.vincent.filepicker.adapter.FolderListAdapter;
 import com.vincent.filepicker.adapter.ImagePickAdapter;
 import com.vincent.filepicker.adapter.OnSelectStateListener;
 import com.vincent.filepicker.filter.FileFilter;
@@ -40,13 +41,19 @@ public class ImagePickActivity extends BaseActivity {
     public static final int COLUMN_NUMBER = 3;
     private int mMaxNumber;
     private int mCurrentNumber = 0;
-    private Toolbar mTbImagePick;
     private RecyclerView mRecyclerView;
     private ImagePickAdapter mAdapter;
     private boolean isNeedCamera;
     private boolean isNeedImagePager;
     private boolean isTakenAutoSelected;
     public ArrayList<ImageFile> mSelectedList = new ArrayList<>();
+    private List<Directory<ImageFile>> mAll;
+
+    private TextView tv_count;
+    private TextView tv_folder;
+    private LinearLayout ll_folder;
+    private RelativeLayout rl_done;
+    private RelativeLayout tb_pick;
 
     @Override
     void permissionGranted() {
@@ -55,6 +62,7 @@ public class ImagePickActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.vw_activity_image_pick);
 
         mMaxNumber = getIntent().getIntExtra(Constant.MAX_NUMBER, DEFAULT_MAX_NUMBER);
@@ -62,23 +70,14 @@ public class ImagePickActivity extends BaseActivity {
         isNeedImagePager = getIntent().getBooleanExtra(IS_NEED_IMAGE_PAGER, true);
         isTakenAutoSelected = getIntent().getBooleanExtra(IS_TAKEN_AUTO_SELECTED, true);
         initView();
-
-        super.onCreate(savedInstanceState);
     }
 
     private void initView() {
-        mTbImagePick = (Toolbar) findViewById(R.id.tb_image_pick);
-        mTbImagePick.setTitle(mCurrentNumber + "/" + mMaxNumber);
-        setSupportActionBar(mTbImagePick);
-        mTbImagePick.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        tv_count = (TextView) findViewById(R.id.tv_count);
+        tv_count.setText(mCurrentNumber + "/" + mMaxNumber);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_image_pick);
-        GridLayoutManager layoutManager = new GridLayoutManager(this, COLUMN_NUMBER);
+        final GridLayoutManager layoutManager = new GridLayoutManager(this, COLUMN_NUMBER);
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.addItemDecoration(new DividerGridItemDecoration(this));
         mAdapter = new ImagePickAdapter(this, isNeedCamera, isNeedImagePager, mMaxNumber);
@@ -94,9 +93,55 @@ public class ImagePickActivity extends BaseActivity {
                     mSelectedList.remove(file);
                     mCurrentNumber--;
                 }
-                mTbImagePick.setTitle(mCurrentNumber + "/" + mMaxNumber);
+                tv_count.setText(mCurrentNumber + "/" + mMaxNumber);
             }
         });
+
+        rl_done = (RelativeLayout) findViewById(R.id.rl_done);
+        rl_done.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.putParcelableArrayListExtra(Constant.RESULT_PICK_IMAGE, mSelectedList);
+                setResult(RESULT_OK, intent);
+                finish();
+            }
+        });
+
+        tb_pick = (RelativeLayout) findViewById(R.id.tb_pick);
+        ll_folder = (LinearLayout) findViewById(R.id.ll_folder);
+        if (isNeedFolderList) {
+            ll_folder.setVisibility(View.VISIBLE);
+            ll_folder.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mFolderHelper.toggle(tb_pick);
+                }
+            });
+            tv_folder = (TextView) findViewById(R.id.tv_folder);
+            tv_folder.setText(getResources().getString(R.string.vw_all));
+
+            mFolderHelper.setFolderListListener(new FolderListAdapter.FolderListListener() {
+                @Override
+                public void onFolderListClick(Directory directory) {
+                    mFolderHelper.toggle(tb_pick);
+                    tv_folder.setText(directory.getName());
+
+                    if (TextUtils.isEmpty(directory.getPath())) { //All
+                        refreshData(mAll);
+                    } else {
+                        for (Directory<ImageFile> dir : mAll) {
+                            if (dir.getPath().equals(directory.getPath())) {
+                                List<Directory<ImageFile>> list = new ArrayList<>();
+                                list.add(dir);
+                                refreshData(list);
+                                break;
+                            }
+                        }
+                    }
+                }
+            });
+        }
     }
 
     @Override
@@ -122,7 +167,7 @@ public class ImagePickActivity extends BaseActivity {
                     ArrayList<ImageFile> list = data.getParcelableArrayListExtra(Constant.RESULT_BROWSER_IMAGE);
                     mCurrentNumber = list.size();
                     mAdapter.setCurrentNumber(mCurrentNumber);
-                    mTbImagePick.setTitle(mCurrentNumber + "/" + mMaxNumber);
+                    tv_count.setText(mCurrentNumber + "/" + mMaxNumber);
                     mSelectedList.clear();
                     mSelectedList.addAll(list);
 
@@ -143,33 +188,48 @@ public class ImagePickActivity extends BaseActivity {
         FileFilter.getImages(this, new FilterResultCallback<ImageFile>() {
             @Override
             public void onResult(List<Directory<ImageFile>> directories) {
-                boolean tryToFindTakenImage = isTakenAutoSelected;
-
-                // if auto-select taken image is enabled, make sure requirements are met
-                if (tryToFindTakenImage && !TextUtils.isEmpty(mAdapter.mImagePath)) {
-                    File takenImageFile = new File(mAdapter.mImagePath);
-                    tryToFindTakenImage = !mAdapter.isUpToMax() && takenImageFile.exists(); // try to select taken image only if max isn't reached and the file exists
+                // Refresh folder list
+                if (isNeedFolderList) {
+                    ArrayList<Directory> list = new ArrayList<>();
+                    Directory all = new Directory();
+                    all.setName(getResources().getString(R.string.vw_all));
+                    list.add(all);
+                    list.addAll(directories);
+                    mFolderHelper.fillData(list);
                 }
 
-                List<ImageFile> list = new ArrayList<>();
-                for (Directory<ImageFile> directory : directories) {
-                    list.addAll(directory.getFiles());
-
-                    // auto-select taken images?
-                    if (tryToFindTakenImage) {
-                        findAndAddTakenImage(directory.getFiles());   // if taken image was found, we're done
-                    }
-                }
-
-                for (ImageFile file : mSelectedList) {
-                    int index = list.indexOf(file);
-                    if (index != -1) {
-                        list.get(index).setSelected(true);
-                    }
-                }
-                mAdapter.refresh(list);
+                mAll = directories;
+                refreshData(directories);
             }
         });
+    }
+
+    private void refreshData(List<Directory<ImageFile>> directories) {
+        boolean tryToFindTakenImage = isTakenAutoSelected;
+
+        // if auto-select taken image is enabled, make sure requirements are met
+        if (tryToFindTakenImage && !TextUtils.isEmpty(mAdapter.mImagePath)) {
+            File takenImageFile = new File(mAdapter.mImagePath);
+            tryToFindTakenImage = !mAdapter.isUpToMax() && takenImageFile.exists(); // try to select taken image only if max isn't reached and the file exists
+        }
+
+        List<ImageFile> list = new ArrayList<>();
+        for (Directory<ImageFile> directory : directories) {
+            list.addAll(directory.getFiles());
+
+            // auto-select taken images?
+            if (tryToFindTakenImage) {
+                findAndAddTakenImage(directory.getFiles());   // if taken image was found, we're done
+            }
+        }
+
+        for (ImageFile file : mSelectedList) {
+            int index = list.indexOf(file);
+            if (index != -1) {
+                list.get(index).setSelected(true);
+            }
+        }
+        mAdapter.refresh(list);
     }
 
     private boolean findAndAddTakenImage(List<ImageFile> list) {
@@ -178,7 +238,7 @@ public class ImagePickActivity extends BaseActivity {
                 mSelectedList.add(imageFile);
                 mCurrentNumber++;
                 mAdapter.setCurrentNumber(mCurrentNumber);
-                mTbImagePick.setTitle(mCurrentNumber + "/" + mMaxNumber);
+                tv_count.setText(mCurrentNumber + "/" + mMaxNumber);
 
                 return true;   // taken image was found and added
             }
@@ -192,24 +252,5 @@ public class ImagePickActivity extends BaseActivity {
                 mSelectedList.add(file);
             }
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.vw_menu_image_pick, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_done) {
-            Intent intent = new Intent();
-            intent.putParcelableArrayListExtra(Constant.RESULT_PICK_IMAGE, mSelectedList);
-            setResult(RESULT_OK, intent);
-            finish();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 }

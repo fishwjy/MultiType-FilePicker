@@ -6,8 +6,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 
+import com.vincent.filepicker.FolderListHelper;
 import com.vincent.filepicker.R;
+import com.vincent.filepicker.adapter.FolderListAdapter;
+import com.vincent.filepicker.filter.entity.Directory;
 
 import java.util.List;
 
@@ -25,11 +29,26 @@ public abstract class BaseActivity extends AppCompatActivity implements EasyPerm
     private static final int RC_READ_EXTERNAL_STORAGE = 123;
     private static final String TAG = BaseActivity.class.getName();
 
+    protected FolderListHelper mFolderHelper;
+    protected boolean isNeedFolderList;
+    public static final String IS_NEED_FOLDER_LIST = "isNeedFolderList";
+
     abstract void permissionGranted();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        isNeedFolderList = getIntent().getBooleanExtra(IS_NEED_FOLDER_LIST, false);
+        if (isNeedFolderList) {
+            mFolderHelper = new FolderListHelper();
+            mFolderHelper.initFolderListView(this);
+        }
+    }
+
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
         readExternalStorage();
     }
 
@@ -83,5 +102,9 @@ public abstract class BaseActivity extends AppCompatActivity implements EasyPerm
                 finish();
             }
         }
+    }
+
+    public void onBackClick(View view) {
+        finish();
     }
 }

@@ -7,14 +7,19 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.vincent.filepicker.Constant;
 import com.vincent.filepicker.DividerListItemDecoration;
 import com.vincent.filepicker.R;
+import com.vincent.filepicker.adapter.FolderListAdapter;
 import com.vincent.filepicker.adapter.NormalFilePickAdapter;
 import com.vincent.filepicker.adapter.OnSelectStateListener;
 import com.vincent.filepicker.filter.FileFilter;
@@ -36,49 +41,37 @@ public class NormalFilePickActivity extends BaseActivity {
     public static final String SUFFIX = "Suffix";
     private int mMaxNumber;
     private int mCurrentNumber = 0;
-    private Toolbar mTbImagePick;
     private RecyclerView mRecyclerView;
     private NormalFilePickAdapter mAdapter;
     private ArrayList<NormalFile> mSelectedList = new ArrayList<>();
+    private List<Directory<NormalFile>> mAll;
     private ProgressBar mProgressBar;
     private String[] mSuffix;
 
+    private TextView tv_count;
+    private TextView tv_folder;
+    private LinearLayout ll_folder;
+    private RelativeLayout rl_done;
+    private RelativeLayout tb_pick;
+
     @Override
     void permissionGranted() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                loadData();
-            }
-        }, 1000);
+        loadData();
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.vw_activity_file_pick);
 
         mMaxNumber = getIntent().getIntExtra(Constant.MAX_NUMBER, DEFAULT_MAX_NUMBER);
         mSuffix = getIntent().getStringArrayExtra(SUFFIX);
-
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
         initView();
     }
 
     private void initView() {
-        mTbImagePick = (Toolbar) findViewById(R.id.tb_file_pick);
-        mTbImagePick.setTitle(mCurrentNumber + "/" + mMaxNumber);
-        setSupportActionBar(mTbImagePick);
-        mTbImagePick.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        tv_count = (TextView) findViewById(R.id.tv_count);
+        tv_count.setText(mCurrentNumber + "/" + mMaxNumber);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_file_pick);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -98,52 +91,93 @@ public class NormalFilePickActivity extends BaseActivity {
                     mSelectedList.remove(file);
                     mCurrentNumber--;
                 }
-                mTbImagePick.setTitle(mCurrentNumber + "/" + mMaxNumber);
+                tv_count.setText(mCurrentNumber + "/" + mMaxNumber);
             }
         });
 
         mProgressBar = (ProgressBar) findViewById(R.id.pb_file_pick);
+
+        rl_done = (RelativeLayout) findViewById(R.id.rl_done);
+        rl_done.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.putParcelableArrayListExtra(Constant.RESULT_PICK_FILE, mSelectedList);
+                setResult(RESULT_OK, intent);
+                finish();
+            }
+        });
+
+        tb_pick = (RelativeLayout) findViewById(R.id.tb_pick);
+        ll_folder = (LinearLayout) findViewById(R.id.ll_folder);
+        if (isNeedFolderList) {
+            ll_folder.setVisibility(View.VISIBLE);
+            ll_folder.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mFolderHelper.toggle(tb_pick);
+                }
+            });
+            tv_folder = (TextView) findViewById(R.id.tv_folder);
+            tv_folder.setText(getResources().getString(R.string.vw_all));
+
+            mFolderHelper.setFolderListListener(new FolderListAdapter.FolderListListener() {
+                @Override
+                public void onFolderListClick(Directory directory) {
+                    mFolderHelper.toggle(tb_pick);
+                    tv_folder.setText(directory.getName());
+
+                    if (TextUtils.isEmpty(directory.getPath())) { //All
+                        refreshData(mAll);
+                    } else {
+                        for (Directory<NormalFile> dir : mAll) {
+                            if (dir.getPath().equals(directory.getPath())) {
+                                List<Directory<NormalFile>> list = new ArrayList<>();
+                                list.add(dir);
+                                refreshData(list);
+                                break;
+                            }
+                        }
+                    }
+                }
+            });
+        }
     }
 
     private void loadData() {
         FileFilter.getFiles(this, new FilterResultCallback<NormalFile>() {
             @Override
             public void onResult(List<Directory<NormalFile>> directories) {
-                mProgressBar.setVisibility(View.GONE);
-                List<NormalFile> list = new ArrayList<>();
-                for (Directory<NormalFile> directory : directories) {
-                    list.addAll(directory.getFiles());
+                // Refresh folder list
+                if (isNeedFolderList) {
+                    ArrayList<Directory> list = new ArrayList<>();
+                    Directory all = new Directory();
+                    all.setName(getResources().getString(R.string.vw_all));
+                    list.add(all);
+                    list.addAll(directories);
+                    mFolderHelper.fillData(list);
                 }
 
-                for (NormalFile file : mSelectedList) {
-                    int index = list.indexOf(file);
-                    if (index != -1) {
-                        list.get(index).setSelected(true);
-                    }
-                }
-
-                mAdapter.refresh(list);
+                mAll = directories;
+                refreshData(directories);
             }
         }, mSuffix);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.vw_menu_image_pick, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_done) {
-            Intent intent = new Intent();
-            intent.putParcelableArrayListExtra(Constant.RESULT_PICK_FILE, mSelectedList);
-            setResult(RESULT_OK, intent);
-            finish();
-            return true;
+    private void refreshData(List<Directory<NormalFile>> directories) {
+        mProgressBar.setVisibility(View.GONE);
+        List<NormalFile> list = new ArrayList<>();
+        for (Directory<NormalFile> directory : directories) {
+            list.addAll(directory.getFiles());
         }
 
-        return super.onOptionsItemSelected(item);
+        for (NormalFile file : mSelectedList) {
+            int index = list.indexOf(file);
+            if (index != -1) {
+                list.get(index).setSelected(true);
+            }
+        }
+
+        mAdapter.refresh(list);
     }
 }

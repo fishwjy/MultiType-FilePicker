@@ -8,4 +8,5 @@
     <string name="vw_no_audio_play_app">No App exists for playing audio!</string>
     <string name="vw_no_video_app">No video App in this phone!</string>
     <string name="vw_no_audio_app">No audio App in this phone!</string>
+    <string name="vw_all">All</string>
 </resources>

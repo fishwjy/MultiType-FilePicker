@@ -6,16 +6,17 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.vincent.filepicker.Constant;
 import com.vincent.filepicker.DividerGridItemDecoration;
 import com.vincent.filepicker.R;
+import com.vincent.filepicker.adapter.FolderListAdapter;
 import com.vincent.filepicker.adapter.OnSelectStateListener;
 import com.vincent.filepicker.adapter.VideoPickAdapter;
 import com.vincent.filepicker.filter.FileFilter;
@@ -42,13 +43,19 @@ public class VideoPickActivity extends BaseActivity {
     public static final int COLUMN_NUMBER = 3;
     private int mMaxNumber;
     private int mCurrentNumber = 0;
-    private Toolbar mTbImagePick;
     private RecyclerView mRecyclerView;
     private VideoPickAdapter mAdapter;
     private boolean isNeedCamera;
     private boolean isTakenAutoSelected;
     private ArrayList<VideoFile> mSelectedList = new ArrayList<>();
+    private List<Directory<VideoFile>> mAll;
     private ProgressBar mProgressBar;
+
+    private TextView tv_count;
+    private TextView tv_folder;
+    private LinearLayout ll_folder;
+    private RelativeLayout rl_done;
+    private RelativeLayout tb_pick;
 
     @Override
     void permissionGranted() {
@@ -57,26 +64,18 @@ public class VideoPickActivity extends BaseActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.vw_activity_video_pick);
 
         mMaxNumber = getIntent().getIntExtra(Constant.MAX_NUMBER, DEFAULT_MAX_NUMBER);
         isNeedCamera = getIntent().getBooleanExtra(IS_NEED_CAMERA, false);
         isTakenAutoSelected = getIntent().getBooleanExtra(IS_TAKEN_AUTO_SELECTED, true);
         initView();
-
-        super.onCreate(savedInstanceState);
     }
 
     private void initView() {
-        mTbImagePick = (Toolbar) findViewById(R.id.tb_video_pick);
-        mTbImagePick.setTitle(mCurrentNumber + "/" + mMaxNumber);
-        setSupportActionBar(mTbImagePick);
-        mTbImagePick.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        tv_count = (TextView) findViewById(R.id.tv_count);
+        tv_count.setText(mCurrentNumber + "/" + mMaxNumber);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_video_pick);
         GridLayoutManager layoutManager = new GridLayoutManager(this, COLUMN_NUMBER);
@@ -96,7 +95,7 @@ public class VideoPickActivity extends BaseActivity {
                     mSelectedList.remove(file);
                     mCurrentNumber--;
                 }
-                mTbImagePick.setTitle(mCurrentNumber + "/" + mMaxNumber);
+                tv_count.setText(mCurrentNumber + "/" + mMaxNumber);
             }
         });
 
@@ -106,6 +105,52 @@ public class VideoPickActivity extends BaseActivity {
             mProgressBar.setVisibility(View.VISIBLE);
         } else {
             mProgressBar.setVisibility(View.GONE);
+        }
+
+        rl_done = (RelativeLayout) findViewById(R.id.rl_done);
+        rl_done.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.putParcelableArrayListExtra(Constant.RESULT_PICK_VIDEO, mSelectedList);
+                setResult(RESULT_OK, intent);
+                finish();
+            }
+        });
+
+        tb_pick = (RelativeLayout) findViewById(R.id.tb_pick);
+        ll_folder = (LinearLayout) findViewById(R.id.ll_folder);
+        if (isNeedFolderList) {
+            ll_folder.setVisibility(View.VISIBLE);
+            ll_folder.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mFolderHelper.toggle(tb_pick);
+                }
+            });
+            tv_folder = (TextView) findViewById(R.id.tv_folder);
+            tv_folder.setText(getResources().getString(R.string.vw_all));
+
+            mFolderHelper.setFolderListListener(new FolderListAdapter.FolderListListener() {
+                @Override
+                public void onFolderListClick(Directory directory) {
+                    mFolderHelper.toggle(tb_pick);
+                    tv_folder.setText(directory.getName());
+
+                    if (TextUtils.isEmpty(directory.getPath())) { //All
+                        refreshData(mAll);
+                    } else {
+                        for (Directory<VideoFile> dir : mAll) {
+                            if (dir.getPath().equals(directory.getPath())) {
+                                List<Directory<VideoFile>> list = new ArrayList<>();
+                                list.add(dir);
+                                refreshData(list);
+                                break;
+                            }
+                        }
+                    }
+                }
+            });
         }
     }
 
@@ -132,33 +177,48 @@ public class VideoPickActivity extends BaseActivity {
             @Override
             public void onResult(List<Directory<VideoFile>> directories) {
                 mProgressBar.setVisibility(View.GONE);
-                boolean tryToFindTaken = isTakenAutoSelected;
-
-                // if auto-select taken file is enabled, make sure requirements are met
-                if (tryToFindTaken && !TextUtils.isEmpty(mAdapter.mVideoPath)) {
-                    File takenFile = new File(mAdapter.mVideoPath);
-                    tryToFindTaken = !mAdapter.isUpToMax() && takenFile.exists(); // try to select taken file only if max isn't reached and the file exists
+                // Refresh folder list
+                if (isNeedFolderList) {
+                    ArrayList<Directory> list = new ArrayList<>();
+                    Directory all = new Directory();
+                    all.setName(getResources().getString(R.string.vw_all));
+                    list.add(all);
+                    list.addAll(directories);
+                    mFolderHelper.fillData(list);
                 }
 
-                List<VideoFile> list = new ArrayList<>();
-                for (Directory<VideoFile> directory : directories) {
-                    list.addAll(directory.getFiles());
-
-                    // auto-select taken file?
-                    if (tryToFindTaken) {
-                        tryToFindTaken = findAndAddTaken(directory.getFiles());   // if taken file was found, we're done
-                    }
-                }
-
-                for (VideoFile file : mSelectedList) {
-                    int index = list.indexOf(file);
-                    if (index != -1) {
-                        list.get(index).setSelected(true);
-                    }
-                }
-                mAdapter.refresh(list);
+                mAll = directories;
+                refreshData(directories);
             }
         });
+    }
+
+    private void refreshData(List<Directory<VideoFile>> directories) {
+        boolean tryToFindTaken = isTakenAutoSelected;
+
+        // if auto-select taken file is enabled, make sure requirements are met
+        if (tryToFindTaken && !TextUtils.isEmpty(mAdapter.mVideoPath)) {
+            File takenFile = new File(mAdapter.mVideoPath);
+            tryToFindTaken = !mAdapter.isUpToMax() && takenFile.exists(); // try to select taken file only if max isn't reached and the file exists
+        }
+
+        List<VideoFile> list = new ArrayList<>();
+        for (Directory<VideoFile> directory : directories) {
+            list.addAll(directory.getFiles());
+
+            // auto-select taken file?
+            if (tryToFindTaken) {
+                tryToFindTaken = findAndAddTaken(directory.getFiles());   // if taken file was found, we're done
+            }
+        }
+
+        for (VideoFile file : mSelectedList) {
+            int index = list.indexOf(file);
+            if (index != -1) {
+                list.get(index).setSelected(true);
+            }
+        }
+        mAdapter.refresh(list);
     }
 
     private boolean findAndAddTaken(List<VideoFile> list) {
@@ -167,30 +227,11 @@ public class VideoPickActivity extends BaseActivity {
                 mSelectedList.add(videoFile);
                 mCurrentNumber++;
                 mAdapter.setCurrentNumber(mCurrentNumber);
-                mTbImagePick.setTitle(mCurrentNumber + "/" + mMaxNumber);
+                tv_count.setText(mCurrentNumber + "/" + mMaxNumber);
 
                 return true;   // taken file was found and added
             }
         }
         return false;    // taken file wasn't found
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.vw_menu_image_pick, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_done) {
-            Intent intent = new Intent();
-            intent.putParcelableArrayListExtra(Constant.RESULT_PICK_VIDEO, mSelectedList);
-            setResult(RESULT_OK, intent);
-            finish();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 }

@@ -1,23 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/tb_video_pick"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/vw_BgToolBar"
-        android:theme="@style/vw_ToolbarTheme"
-        app:titleTextColor="#FFFFFF"
-        app:navigationIcon="@drawable/vw_ic_back" />
+    <include android:id="@+id/tb_pick"
+        layout="@layout/vw_layout_top_bar" />
 
     <View
         android:id="@+id/rv_top_divider"
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:layout_below="@id/tb_video_pick"
+        android:layout_below="@+id/tb_pick"
         android:background="@color/vw_BgRv" />
 
     <android.support.v7.widget.RecyclerView

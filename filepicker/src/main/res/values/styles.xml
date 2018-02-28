@@ -38,4 +38,10 @@
         <item name="android:textSize">16sp</item> <!-- 字体大小 -->
     </style>
 
+    <!-- MaxHeightLayout属性 -->
+    <declare-styleable name="MaxHeightLayout">
+        <attr name="mhl_HeightRatio" format="reference|float" />
+        <attr name="mhl_HeightDimen" format="reference|dimension" />
+    </declare-styleable>
+
 </resources>
