@@ -11,6 +11,7 @@ Please star this library if you like it. :)
 ![Demo](/pic/pick_vid.png)
 ![Demo](/pic/pick_aud.png)
 ![Demo](/pic/pick_file.png)
+![Demo](/pic/pick_photo_folder.png)
 
 ## Usage
 ### 1.Import to your project
@@ -78,6 +79,8 @@ Please star this library if you like it. :)
 1.0.5    Use Glide to load video thumbnail, delete record in Media DB when user cancel taking photo and add prefix to resources
 
 1.0.6    Add folder feature
+
+1.0.7    Upgrade to Glide 4
 
 ## Thanks
 Inspired by [Android-FilePicker](https://github.com/DroidNinja/Android-FilePicker)
