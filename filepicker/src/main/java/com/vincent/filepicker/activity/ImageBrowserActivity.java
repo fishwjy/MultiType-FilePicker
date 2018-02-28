@@ -25,6 +25,7 @@ import com.vincent.filepicker.filter.entity.ImageFile;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 import static com.vincent.filepicker.activity.ImagePickActivity.DEFAULT_MAX_NUMBER;
 
 /**
@@ -154,9 +155,10 @@ public class ImageBrowserActivity extends BaseActivity {
             PhotoView view = new PhotoView(ImageBrowserActivity.this);
             view.enable();
             view.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+
             Glide.with(ImageBrowserActivity.this)
                     .load(mList.get(position).getPath())
-                    .crossFade()
+                    .transition(withCrossFade())
                     .into(view);
             container.addView(view);
             return view;

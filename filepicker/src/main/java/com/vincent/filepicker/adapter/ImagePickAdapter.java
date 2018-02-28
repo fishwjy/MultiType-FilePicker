@@ -15,6 +15,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.vincent.filepicker.Constant;
 import com.vincent.filepicker.R;
 import com.vincent.filepicker.ToastUtil;
@@ -30,6 +31,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import static android.os.Environment.DIRECTORY_DCIM;
+import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 import static com.vincent.filepicker.activity.ImageBrowserActivity.IMAGE_BROWSER_INIT_INDEX;
 import static com.vincent.filepicker.activity.ImageBrowserActivity.IMAGE_BROWSER_SELECTED_LIST;
 
@@ -109,10 +111,13 @@ public class ImagePickAdapter extends BaseAdapter<ImageFile, ImagePickAdapter.Im
             } else {
                 file = mList.get(position);
             }
+
+            RequestOptions options = new RequestOptions();
             Glide.with(mContext)
                     .load(file.getPath())
-                    .centerCrop()
-                    .crossFade()
+                    .apply(options.centerCrop())
+                    .transition(withCrossFade())
+//                    .transition(new DrawableTransitionOptions().crossFade(500))
                     .into(holder.mIvThumbnail);
 
             if (file.isSelected()) {
