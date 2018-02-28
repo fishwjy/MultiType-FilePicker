@@ -77,6 +77,8 @@ Please star this library if you like it. :)
 
 1.0.5    Use Glide to load video thumbnail, delete record in Media DB when user cancel taking photo and add prefix to resources
 
+1.0.6    Add folder feature
+
 ## Thanks
 Inspired by [Android-FilePicker](https://github.com/DroidNinja/Android-FilePicker)
 
