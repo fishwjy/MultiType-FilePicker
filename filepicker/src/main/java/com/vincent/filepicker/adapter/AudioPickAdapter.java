@@ -3,6 +3,7 @@ package com.vincent.filepicker.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.v4.content.FileProvider;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import com.vincent.filepicker.ToastUtil;
 import com.vincent.filepicker.Util;
 import com.vincent.filepicker.filter.entity.AudioFile;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -89,14 +91,17 @@ public class AudioPickAdapter extends BaseAdapter<AudioFile, AudioPickAdapter.Au
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Uri uri = Uri.parse("file://" + file.getPath());
+                Uri audioUri = FileProvider.getUriForFile(mContext, "com.vincent.filepicker", new File(file.getPath()));
                 Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setDataAndType(uri, "audio/mp3");
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                intent.setDataAndType(audioUri, "audio/mp3");
+
                 if (Util.detectIntent(mContext, intent)) {
                     mContext.startActivity(intent);
                 } else {
                     ToastUtil.getInstance(mContext).showToast(mContext.getString(R.string.vw_no_audio_play_app));
                 }
+
             }
         });
     }
