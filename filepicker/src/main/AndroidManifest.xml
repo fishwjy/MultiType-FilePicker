@@ -31,7 +31,7 @@
             android:theme="@style/vw_FilePickerTheme" />
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="com.vincent.filepicker.FileProvider"
+            android:authorities="${applicationId}.provider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
