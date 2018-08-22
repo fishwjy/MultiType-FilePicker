@@ -5,8 +5,10 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -157,8 +159,15 @@ public class VideoPickAdapter extends BaseAdapter<VideoFile, VideoPickAdapter.Vi
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Uri uri = Uri.parse("file://" + file.getPath());
                     Intent intent = new Intent(Intent.ACTION_VIEW);
+                    Uri uri;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        File f = new File(file.getPath());
+                        uri = FileProvider.getUriForFile(mContext, mContext.getApplicationContext().getPackageName() + ".provider", f);
+                    }else{
+                        uri = Uri.parse("file://" + file.getPath());
+                    }
                     intent.setDataAndType(uri, "video/mp4");
                     if (Util.detectIntent(mContext, intent)) {
                         mContext.startActivity(intent);
