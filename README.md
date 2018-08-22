@@ -82,6 +82,8 @@ Please star this library if you like it. :)
 
 1.0.7    Upgrade to Glide 4
 
+1.0.8    Fix provider crash on Android 7.0 above
+
 ## Thanks
 Inspired by [Android-FilePicker](https://github.com/DroidNinja/Android-FilePicker)
 
