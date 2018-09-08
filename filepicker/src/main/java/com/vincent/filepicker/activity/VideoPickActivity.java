@@ -40,9 +40,12 @@ public class VideoPickActivity extends BaseActivity {
     public static final String IS_TAKEN_AUTO_SELECTED = "IsTakenAutoSelected";
 
     public static final int DEFAULT_MAX_NUMBER = 9;
+    public static final int DEFAULT_MAX_VIDEO_DURATION = 0;
     public static final int COLUMN_NUMBER = 3;
     private int mMaxNumber;
-    private int mCurrentNumber = 0;
+    private int mCurrentNumber;
+    private int mMaxVideoDuration = 0;
+    private int mVideoQuality = 1;
     private RecyclerView mRecyclerView;
     private VideoPickAdapter mAdapter;
     private boolean isNeedCamera;
@@ -68,6 +71,8 @@ public class VideoPickActivity extends BaseActivity {
         setContentView(R.layout.vw_activity_video_pick);
 
         mMaxNumber = getIntent().getIntExtra(Constant.MAX_NUMBER, DEFAULT_MAX_NUMBER);
+        mMaxVideoDuration = getIntent().getIntExtra(Constant.MAX_VIDEO_DURATION, DEFAULT_MAX_VIDEO_DURATION);
+        mVideoQuality = getIntent().getIntExtra(Constant.VIDEO_QUALITY, 1);
         isNeedCamera = getIntent().getBooleanExtra(IS_NEED_CAMERA, false);
         isTakenAutoSelected = getIntent().getBooleanExtra(IS_TAKEN_AUTO_SELECTED, true);
         initView();
@@ -82,7 +87,7 @@ public class VideoPickActivity extends BaseActivity {
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.addItemDecoration(new DividerGridItemDecoration(this));
 
-        mAdapter = new VideoPickAdapter(this, isNeedCamera, mMaxNumber);
+        mAdapter = new VideoPickAdapter(this, isNeedCamera, mMaxNumber, mMaxVideoDuration, mVideoQuality);
         mRecyclerView.setAdapter(mAdapter);
 
         mAdapter.setOnSelectStateListener(new OnSelectStateListener<VideoFile>() {

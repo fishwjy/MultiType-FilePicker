@@ -41,6 +41,7 @@ public class AudioPickActivity extends BaseActivity {
 
     public static final int DEFAULT_MAX_NUMBER = 9;
     private int mMaxNumber;
+    private int mMaxSize = 0;
     private int mCurrentNumber = 0;
     private RecyclerView mRecyclerView;
     private AudioPickAdapter mAdapter;
@@ -69,6 +70,7 @@ public class AudioPickActivity extends BaseActivity {
 
         mMaxNumber = getIntent().getIntExtra(Constant.MAX_NUMBER, DEFAULT_MAX_NUMBER);
         isNeedRecorder = getIntent().getBooleanExtra(IS_NEED_RECORDER, false);
+        mMaxSize = getIntent().getIntExtra(Constant.MAX_AUDIO_SIZE, 0);
         isTakenAutoSelected = getIntent().getBooleanExtra(IS_TAKEN_AUTO_SELECTED, true);
         initView();
     }
@@ -152,6 +154,13 @@ public class AudioPickActivity extends BaseActivity {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
+
+                    if(mMaxSize > 0){
+                        String MAX_SIZE = android.provider.MediaStore.Audio.Media.EXTRA_MAX_BYTES;
+                        long bytes = (long) (mMaxSize * 4L);
+                        intent.putExtra(MAX_SIZE , bytes);
+                    }
+
                     if (Util.detectIntent(AudioPickActivity.this, intent)) {
                         startActivityForResult(intent, Constant.REQUEST_CODE_TAKE_AUDIO);
                     } else {

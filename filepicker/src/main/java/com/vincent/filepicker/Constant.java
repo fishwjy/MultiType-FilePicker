@@ -8,6 +8,9 @@ package com.vincent.filepicker;
 
 public class Constant {
     public static final String MAX_NUMBER = "MaxNumber";
+    public static final String MAX_VIDEO_DURATION = "MaxVideoDuration";
+    public static final String VIDEO_QUALITY = "VideoQuality";
+    public static final String MAX_AUDIO_SIZE = "AudioFileSize";
 
     public static final int REQUEST_CODE_PICK_IMAGE = 0x100;
     public static final String RESULT_PICK_IMAGE = "ResultPickImage";

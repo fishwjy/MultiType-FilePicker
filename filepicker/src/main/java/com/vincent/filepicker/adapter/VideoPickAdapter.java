@@ -45,17 +45,21 @@ import static com.vincent.filepicker.Constant.REQUEST_CODE_TAKE_VIDEO;
 public class VideoPickAdapter extends BaseAdapter<VideoFile, VideoPickAdapter.VideoPickViewHolder> {
     private boolean isNeedCamera;
     private int mMaxNumber;
+    private int mMaxVideoDuration = 0;
+    private int mVideoQuality = 1;
     private int mCurrentNumber = 0;
     public String mVideoPath;
 
-    public VideoPickAdapter(Context ctx, boolean needCamera, int max) {
-        this(ctx, new ArrayList<VideoFile>(), needCamera, max);
+    public VideoPickAdapter(Context ctx, boolean needCamera, int max, int duration, int quality) {
+        this(ctx, new ArrayList<VideoFile>(), needCamera, max, duration, quality);
     }
 
-    public VideoPickAdapter(Context ctx, ArrayList<VideoFile> list, boolean needCamera, int max) {
+    public VideoPickAdapter(Context ctx, ArrayList<VideoFile> list, boolean needCamera, int max, int duration, int quality) {
         super(ctx, list);
         isNeedCamera = needCamera;
         mMaxNumber = max;
+        mMaxVideoDuration = duration;
+        mVideoQuality = quality;
     }
 
     @Override
@@ -92,7 +96,10 @@ public class VideoPickAdapter extends BaseAdapter<VideoFile, VideoPickAdapter.Vi
                     Uri uri = mContext.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
 
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-                    intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+                    intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, mVideoQuality);
+                    if(mMaxVideoDuration > 0){
+                        intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT , mMaxVideoDuration);
+                    }
                     if (Util.detectIntent(mContext, intent)) {
                         ((Activity) mContext).startActivityForResult(intent, REQUEST_CODE_TAKE_VIDEO);
                     } else {
