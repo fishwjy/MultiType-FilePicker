@@ -39,10 +39,10 @@ public class AudioLoader extends CursorLoader {
 
         setSelection(MIME_TYPE + "=? or "
                 + MIME_TYPE + "=? or "
-//                + MIME_TYPE + "=? or "
+                + MIME_TYPE + "=? or "
                 + MIME_TYPE + "=?");
         String[] selectionArgs;
-        selectionArgs = new String[]{"audio/mpeg", "audio/mp3", "audio/x-ms-wma"};
+        selectionArgs = new String[]{"audio/mpeg", "audio/mp3", "audio/x-ms-wma", "audio/mp4"};
         setSelectionArgs(selectionArgs);
     }
 }
