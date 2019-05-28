@@ -15,9 +15,12 @@ Please star this library if you like it. :)
 
 ## Usage
 ### 1.Import to your project
+```groovy
     compile 'com.vincent.filepicker:MultiTypeFilePicker:latestVersion' 
+```
     
 ### 2.Start Activity For Result
+```java
     case R.id.btn_pick_image:
 		Intent intent1 = new Intent(this, ImagePickActivity.class);
 		intent1.putExtra(IS_NEED_CAMERA, true);
@@ -42,8 +45,10 @@ Please star this library if you like it. :)
 		intent4.putExtra(NormalFilePickActivity.SUFFIX, new String[] {"xlsx", "xls", "doc", "docx", "ppt", "pptx", "pdf"});
 		startActivityForResult(intent4, Constant.REQUEST_CODE_PICK_FILE);
 		break;
+```
 		
 ### 3.Receive the Result from Activity
+```java
     case Constant.REQUEST_CODE_PICK_IMAGE:
 		if (resultCode == RESULT_OK) {
             ArrayList<ImageFile> list = data.getParcelableArrayListExtra(Constant.RESULT_PICK_IMAGE);
@@ -64,6 +69,7 @@ Please star this library if you like it. :)
             ArrayList<NormalFile> list = data.getParcelableArrayListExtra(Constant.RESULT_PICK_FILE);
         }
         break;
+```
 
 ## Version Log
 1.0.0    Initial Version
