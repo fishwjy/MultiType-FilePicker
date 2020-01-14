@@ -2,13 +2,10 @@ package com.vincent.filepicker.filter.callback;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.media.MediaMetadataRetriever;
-import android.media.ThumbnailUtils;
 import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.CursorLoader;
+import androidx.loader.content.Loader;
 
 import com.vincent.filepicker.Util;
 import com.vincent.filepicker.filter.entity.AudioFile;
@@ -21,14 +18,9 @@ import com.vincent.filepicker.filter.loader.FileLoader;
 import com.vincent.filepicker.filter.loader.ImageLoader;
 import com.vincent.filepicker.filter.loader.VideoLoader;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

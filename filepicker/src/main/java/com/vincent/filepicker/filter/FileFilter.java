@@ -1,6 +1,6 @@
 package com.vincent.filepicker.filter;
 
-import android.support.v4.app.FragmentActivity;
+import androidx.fragment.app.FragmentActivity;
 
 import com.vincent.filepicker.filter.callback.FileLoaderCallbacks;
 import com.vincent.filepicker.filter.callback.FilterResultCallback;
