@@ -2,22 +2,21 @@ package com.vincent.filepicker.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
 import com.vincent.filepicker.FolderListHelper;
 import com.vincent.filepicker.R;
-import com.vincent.filepicker.adapter.FolderListAdapter;
-import com.vincent.filepicker.filter.entity.Directory;
 
 import java.util.List;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
+
 
 /**
  * Created by Vincent Woo

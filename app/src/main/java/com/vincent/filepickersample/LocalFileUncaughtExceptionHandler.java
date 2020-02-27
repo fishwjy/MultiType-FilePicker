@@ -21,7 +21,6 @@ import java.util.Locale;
  * Date: 2015/10/29
  * Time: 15:31
  */
-
 public class LocalFileUncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
     private Context mContext;
     private Thread.UncaughtExceptionHandler mDefaultHandler;
