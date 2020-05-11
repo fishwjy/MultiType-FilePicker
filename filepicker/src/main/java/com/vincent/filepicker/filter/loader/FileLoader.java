@@ -34,7 +34,7 @@ public class FileLoader extends CursorLoader {
         super(context);
         setProjection(FILE_PROJECTION);
         setUri(MediaStore.Files.getContentUri("external"));
-//        setSortOrder(MediaStore.Files.FileColumns.DATE_ADDED + " DESC");
+        setSortOrder(MediaStore.Files.FileColumns.DATE_ADDED + " DESC");
 
 //        setSelection(MIME_TYPE + "=? or "
 ////                + MIME_TYPE + "=? or "
