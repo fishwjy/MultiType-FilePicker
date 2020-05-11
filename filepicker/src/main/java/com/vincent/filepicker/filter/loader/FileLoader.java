@@ -3,9 +3,7 @@ package com.vincent.filepicker.filter.loader;
 import android.content.Context;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.support.v4.content.CursorLoader;
-
-import static android.provider.MediaStore.MediaColumns.MIME_TYPE;
+import androidx.loader.content.CursorLoader;
 
 /**
  * Created by Vincent Woo
@@ -24,6 +22,7 @@ public class FileLoader extends CursorLoader {
 
             //Normal File
             MediaStore.Files.FileColumns.MIME_TYPE
+
     };
 
     private FileLoader(Context context, Uri uri, String[] projection, String selection,
@@ -35,7 +34,7 @@ public class FileLoader extends CursorLoader {
         super(context);
         setProjection(FILE_PROJECTION);
         setUri(MediaStore.Files.getContentUri("external"));
-        setSortOrder(MediaStore.Files.FileColumns.DATE_ADDED + " DESC");
+//        setSortOrder(MediaStore.Files.FileColumns.DATE_ADDED + " DESC");
 
 //        setSelection(MIME_TYPE + "=? or "
 ////                + MIME_TYPE + "=? or "

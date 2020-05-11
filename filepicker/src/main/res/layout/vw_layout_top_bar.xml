@@ -24,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_toRightOf="@+id/rl_back"
+        android:layout_toEndOf="@id/rl_back"
         android:textColor="@android:color/white"
         android:textSize="20sp"
         tools:text="0/9" />
@@ -54,7 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
             android:src="@drawable/vw_ic_arrow_down" />
 
     </LinearLayout>
@@ -63,7 +63,7 @@
         android:id="@+id/rl_done"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:paddingLeft="10dp"
         android:paddingRight="10dp">
 
@@ -81,7 +81,7 @@
         android:id="@+id/rl_rec_aud"
         android:layout_width="50dp"
         android:layout_height="match_parent"
-        android:layout_toLeftOf="@+id/rl_done"
+        android:layout_toStartOf="@+id/rl_done"
         android:visibility="gone">
 
         <ImageView
