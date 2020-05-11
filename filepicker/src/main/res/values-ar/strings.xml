@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="vw_confirm">تم</string>
+    <string name="vw_no_video_play_app">لا يوجد تطبيق لتشغيل الفيديو!</string>
+    <string name="vw_record_audio">تسجيل صوتي</string>
+    <string name="vw_rationale_storage">تحتاج الي صلاحيات لاختيار الملفات</string>
+    <string name="vw_up_to_max">انت وصلت للحد الأقصي</string>
+    <string name="vw_no_photo_app">لا يوجد تطبيق صور في هذا الهاتف!</string>
+    <string name="vw_no_audio_play_app">لا يوجد تطبيق لتشغيل الصوت!</string>
+    <string name="vw_no_video_app">لا يوجد تطبيق فيديو في هذا الهاتف!</string>
+    <string name="vw_no_audio_app">لا يوجد تطبيق صوت في هذا الهاتف!</string>
+    <string name="vw_all">الكل</string>
+</resources>

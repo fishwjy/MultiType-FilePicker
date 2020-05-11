@@ -2,13 +2,13 @@ package com.vincent.filepicker.filter.callback;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.media.MediaMetadataRetriever;
-import android.media.ThumbnailUtils;
 import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.CursorLoader;
+import androidx.loader.content.Loader;
 
 import com.vincent.filepicker.Util;
 import com.vincent.filepicker.filter.entity.AudioFile;
@@ -21,14 +21,9 @@ import com.vincent.filepicker.filter.loader.FileLoader;
 import com.vincent.filepicker.filter.loader.ImageLoader;
 import com.vincent.filepicker.filter.loader.VideoLoader;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -68,6 +63,7 @@ public class FileLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor
     }
 
     public FileLoaderCallbacks(Context context, FilterResultCallback resultCallback, int type, String[] suffixArgs) {
+
         this.context = new WeakReference<>(context);
         this.resultCallback = resultCallback;
         this.mType = type;
@@ -77,8 +73,10 @@ public class FileLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor
         }
     }
 
+    @NonNull
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Log.d("onCreateLoader", "onCreateLoader: " + id + "  " + args);
         switch (mType) {
             case TYPE_IMAGE:
                 mLoader = new ImageLoader(context.get());
@@ -98,7 +96,7 @@ public class FileLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
         if (data == null) return;
         switch (mType) {
             case TYPE_IMAGE:
@@ -131,6 +129,7 @@ public class FileLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor
 
         while (data.moveToNext()) {
             //Create a File instance
+
             ImageFile img = new ImageFile();
             img.setId(data.getLong(data.getColumnIndexOrThrow(_ID)));
             img.setName(data.getString(data.getColumnIndexOrThrow(TITLE)));
@@ -245,9 +244,12 @@ public class FileLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor
         if (data.getPosition() != -1) {
             data.moveToPosition(-1);
         }
+        Log.d("onFileResult", "onFileResult: " + data.moveToNext());
 
         while (data.moveToNext()) {
             String path = data.getString(data.getColumnIndexOrThrow(DATA));
+            Log.d("onFileResult", "onFileResult: " + path);
+
             if (path != null && contains(path)) {
                 //Create a File instance
                 NormalFile file = new NormalFile();
@@ -287,8 +289,8 @@ public class FileLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor
 
     private String obtainSuffixRegex(String[] suffixes) {
         StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < suffixes.length ; i++) {
-            if (i ==0) {
+        for (int i = 0; i < suffixes.length; i++) {
+            if (i == 0) {
                 builder.append(suffixes[i].replace(".", ""));
             } else {
                 builder.append("|\\.");

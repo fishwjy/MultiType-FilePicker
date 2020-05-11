@@ -10,16 +10,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
         android:src="@drawable/vw_ic_audio" />
 
     <ImageView
         android:id="@+id/cbx"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp"
         android:src="@drawable/vw_selector_cbx_audio" />
 
     <LinearLayout
@@ -27,8 +27,8 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_margin="10dp"
-        android:layout_toLeftOf="@id/cbx"
-        android:layout_toRightOf="@id/ic_file"
+        android:layout_toStartOf="@id/cbx"
+        android:layout_toEndOf="@id/ic_file"
         android:orientation="vertical">
 
         <TextView
