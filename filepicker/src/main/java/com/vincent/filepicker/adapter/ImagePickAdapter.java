@@ -114,7 +114,7 @@ public class ImagePickAdapter extends BaseAdapter<ImageFile, ImagePickAdapter.Im
 
             RequestOptions options = new RequestOptions();
             Glide.with(mContext)
-                    .load(file.getPath())
+                    .load(file.getUri())
                     .apply(options.centerCrop())
                     .transition(withCrossFade())
 //                    .transition(new DrawableTransitionOptions().crossFade(500))

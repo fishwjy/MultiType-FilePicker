@@ -5,11 +5,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
-import androidx.core.content.FileProvider;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +14,8 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -122,7 +121,7 @@ public class VideoPickAdapter extends BaseAdapter<VideoFile, VideoPickAdapter.Vi
 
             RequestOptions options = new RequestOptions();
             Glide.with(mContext)
-                    .load(file.getPath())
+                    .load(file.getUri())
                     .apply(options.centerCrop())
                     .transition(withCrossFade())
 //                    .transition(new DrawableTransitionOptions().crossFade(500))
@@ -167,15 +166,8 @@ public class VideoPickAdapter extends BaseAdapter<VideoFile, VideoPickAdapter.Vi
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(Intent.ACTION_VIEW);
-                    Uri uri;
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                        File f = new File(file.getPath());
-                        uri = FileProvider.getUriForFile(mContext, mContext.getApplicationContext().getPackageName() + ".provider", f);
-                    }else{
-                        uri = Uri.parse("file://" + file.getPath());
-                    }
-                    intent.setDataAndType(uri, "video/mp4");
+                    intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    intent.setDataAndType(file.getUri(), "video/mp4");
                     if (Util.detectIntent(mContext, intent)) {
                         mContext.startActivity(intent);
                     } else {
