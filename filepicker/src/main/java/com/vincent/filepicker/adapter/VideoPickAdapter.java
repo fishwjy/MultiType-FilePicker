@@ -91,8 +91,8 @@ public class VideoPickAdapter extends BaseAdapter<VideoFile, VideoPickAdapter.Vi
                     mVideoPath = file.getAbsolutePath();
 
                     ContentValues contentValues = new ContentValues(1);
-                    contentValues.put(MediaStore.Images.Media.DATA, mVideoPath);
-                    Uri uri = mContext.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
+                    contentValues.put(MediaStore.Video.Media.DATA, mVideoPath);
+                    Uri uri = mContext.getContentResolver().insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, contentValues);
 
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
                     intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, mVideoQuality);
