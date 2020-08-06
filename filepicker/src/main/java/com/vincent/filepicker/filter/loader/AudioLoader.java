@@ -34,15 +34,8 @@ public class AudioLoader extends CursorLoader {
         super(context);
 
         setProjection(AUDIO_PROJECTION);
-        setUri(MediaStore.Files.getContentUri("external"));
+        setUri(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
         setSortOrder(MediaStore.Audio.Media.DATE_ADDED + " DESC");
 
-        setSelection(MIME_TYPE + "=? or "
-                + MIME_TYPE + "=? or "
-                + MIME_TYPE + "=? or "
-                + MIME_TYPE + "=?");
-        String[] selectionArgs;
-        selectionArgs = new String[]{"audio/mpeg", "audio/mp3", "audio/x-ms-wma", "audio/mp4"};
-        setSelectionArgs(selectionArgs);
     }
 }

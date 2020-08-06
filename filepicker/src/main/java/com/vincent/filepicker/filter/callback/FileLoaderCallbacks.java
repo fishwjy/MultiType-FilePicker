@@ -264,6 +264,9 @@ public class FileLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor
 
                 file.setMimeType(data.getString(data.getColumnIndexOrThrow(MIME_TYPE)));
 
+                Uri uri = ContentUris.withAppendedId(MediaStore.Files.getContentUri("external"), file.getId());
+                file.setUri(uri);
+
                 //Create a Directory
                 Directory<NormalFile> directory = new Directory<>();
                 directory.setName(Util.extractFileNameWithSuffix(Util.extractPathWithoutSeparator(file.getPath())));
