@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.vincent.filepicker.Constant;
 import com.vincent.filepicker.DividerListItemDecoration;
 import com.vincent.filepicker.R;
+import com.vincent.filepicker.Util;
 import com.vincent.filepicker.adapter.FolderListAdapter;
 import com.vincent.filepicker.adapter.NormalFilePickAdapter;
 import com.vincent.filepicker.adapter.OnSelectStateListener;
@@ -39,6 +40,7 @@ public class NormalFilePickActivity extends BaseActivity {
     public static final String SUFFIX = "Suffix";
     private int mMaxNumber;
     private int mCurrentNumber = 0;
+    private String selectedDirectory;
     private RecyclerView mRecyclerView;
     private NormalFilePickAdapter mAdapter;
     private ArrayList<NormalFile> mSelectedList = new ArrayList<>();
@@ -126,17 +128,11 @@ public class NormalFilePickActivity extends BaseActivity {
                     tv_folder.setText(directory.getName());
 
                     if (TextUtils.isEmpty(directory.getPath())) { //All
-                        refreshData(mAll);
+                        selectedDirectory = null;
                     } else {
-                        for (Directory<NormalFile> dir : mAll) {
-                            if (dir.getPath().equals(directory.getPath())) {
-                                List<Directory<NormalFile>> list = new ArrayList<>();
-                                list.add(dir);
-                                refreshData(list);
-                                break;
-                            }
-                        }
+                        selectedDirectory = directory.getPath();
                     }
+                    refreshData();
                 }
             });
         }
@@ -157,15 +153,18 @@ public class NormalFilePickActivity extends BaseActivity {
                 }
 
                 mAll = directories;
-                refreshData(directories);
+                refreshData();
             }
         }, mSuffix);
     }
 
-    private void refreshData(List<Directory<NormalFile>> directories) {
+    private void refreshData() {
         mProgressBar.setVisibility(View.GONE);
         List<NormalFile> list = new ArrayList<>();
-        for (Directory<NormalFile> directory : directories) {
+        for (Directory<NormalFile> directory : mAll) {
+            if (selectedDirectory != null && !directory.getPath().equals(selectedDirectory)) {
+                continue;
+            }
             list.addAll(directory.getFiles());
         }
 
@@ -175,6 +174,8 @@ public class NormalFilePickActivity extends BaseActivity {
                 list.get(index).setSelected(true);
             }
         }
+
+        Util.sortFileList(list);
 
         mAdapter.refresh(list);
     }

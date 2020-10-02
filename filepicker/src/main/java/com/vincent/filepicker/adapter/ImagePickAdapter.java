@@ -48,6 +48,7 @@ public class ImagePickAdapter extends BaseAdapter<ImageFile, ImagePickAdapter.Im
     private int mCurrentNumber = 0;
     public String mImagePath;
     public Uri mImageUri;
+    private String selectedDirectory;
 
     public ImagePickAdapter(Context ctx, boolean needCamera, boolean isNeedImagePager, int max) {
         this(ctx, new ArrayList<ImageFile>(), needCamera, isNeedImagePager, max);
@@ -161,6 +162,7 @@ public class ImagePickAdapter extends BaseAdapter<ImageFile, ImagePickAdapter.Im
                     public void onClick(View v) {
                         Intent intent = new Intent(mContext, ImageBrowserActivity.class);
                         intent.putExtra(Constant.MAX_NUMBER, mMaxNumber);
+                        intent.putExtra(Constant.DIRECTORY, selectedDirectory);
                         intent.putExtra(IMAGE_BROWSER_INIT_INDEX,
                                 isNeedCamera ? holder.getAdapterPosition() - 1 : holder.getAdapterPosition());
                         intent.putParcelableArrayListExtra(IMAGE_BROWSER_SELECTED_LIST, ((ImagePickActivity) mContext).mSelectedList);
@@ -216,6 +218,10 @@ public class ImagePickAdapter extends BaseAdapter<ImageFile, ImagePickAdapter.Im
             mShadow = itemView.findViewById(R.id.shadow);
             mCbx = (ImageView) itemView.findViewById(R.id.cbx);
         }
+    }
+
+    public void setSelectedDirectory(String selectedDirectory) {
+        this.selectedDirectory = selectedDirectory;
     }
 
     public boolean isUpToMax() {
