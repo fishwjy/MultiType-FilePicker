@@ -1,16 +1,15 @@
 package com.vincent.filepicker;
 
-import android.animation.Animator;
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.util.DisplayMetrics;
-import android.view.View;
 import android.view.WindowManager;
-import android.view.animation.DecelerateInterpolator;
 
+import com.vincent.filepicker.filter.entity.BaseFile;
+
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -130,5 +129,16 @@ public class Util {
         } else {
             return "";
         }
+    }
+
+    public static void sortFileList(List<? extends BaseFile> list) {
+        Collections.sort(list, (c1, c2) -> {
+            if (c1.getDate() > c2.getDate()) {
+                return -1;
+            } else if (c1.getDate() < c2.getDate()) {
+                return 1;
+            }
+            return 0;
+        });
     }
 }

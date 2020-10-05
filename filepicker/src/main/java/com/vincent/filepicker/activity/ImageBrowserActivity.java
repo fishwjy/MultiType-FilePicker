@@ -2,21 +2,23 @@ package com.vincent.filepicker.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
-import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
 import com.bm.library.PhotoView;
 import com.bumptech.glide.Glide;
 import com.vincent.filepicker.Constant;
 import com.vincent.filepicker.R;
 import com.vincent.filepicker.ToastUtil;
+import com.vincent.filepicker.Util;
 import com.vincent.filepicker.filter.FileFilter;
 import com.vincent.filepicker.filter.callback.FilterResultCallback;
 import com.vincent.filepicker.filter.entity.Directory;
@@ -38,6 +40,7 @@ public class ImageBrowserActivity extends BaseActivity {
     public static final String IMAGE_BROWSER_INIT_INDEX = "ImageBrowserInitIndex";
     public static final String IMAGE_BROWSER_SELECTED_LIST = "ImageBrowserSelectedList";
     private int mMaxNumber;
+    private String selectedDirectory;
     private int mCurrentNumber = 0;
     private int initIndex = 0;
     private int mCurrentIndex = 0;
@@ -57,6 +60,7 @@ public class ImageBrowserActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         setContentView(R.layout.vw_activity_image_browser);
 
+        selectedDirectory = getIntent().getStringExtra(Constant.DIRECTORY);
         mMaxNumber = getIntent().getIntExtra(Constant.MAX_NUMBER, DEFAULT_MAX_NUMBER);
         initIndex = getIntent().getIntExtra(IMAGE_BROWSER_INIT_INDEX, 0);
         mCurrentIndex = initIndex;
@@ -134,7 +138,9 @@ public class ImageBrowserActivity extends BaseActivity {
             public void onResult(List<Directory<ImageFile>> directories) {
                 mList.clear();
                 for (Directory<ImageFile> directory : directories) {
-                    mList.addAll(directory.getFiles());
+                    if (selectedDirectory == null || directory.getPath().equals(selectedDirectory)) {
+                        mList.addAll(directory.getFiles());
+                    }
                 }
 
                 for (ImageFile file : mList) {
@@ -142,6 +148,8 @@ public class ImageBrowserActivity extends BaseActivity {
                         file.setSelected(true);
                     }
                 }
+
+                Util.sortFileList(mList);
 
                 initView();
                 mViewPager.getAdapter().notifyDataSetChanged();
@@ -157,7 +165,7 @@ public class ImageBrowserActivity extends BaseActivity {
             view.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
 
             Glide.with(ImageBrowserActivity.this)
-                    .load(mList.get(position).getPath())
+                    .load(mList.get(position).getUri())
                     .transition(withCrossFade())
                     .into(view);
             container.addView(view);
