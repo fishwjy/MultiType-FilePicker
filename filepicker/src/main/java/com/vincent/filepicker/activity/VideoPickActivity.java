@@ -108,12 +108,12 @@ public class VideoPickActivity extends BaseActivity {
         });
 
         mProgressBar = (ProgressBar) findViewById(R.id.pb_video_pick);
-        File folder = new File(getExternalCacheDir().getAbsolutePath() + File.separator + THUMBNAIL_PATH);
-        if (!folder.exists()) {
-            mProgressBar.setVisibility(View.VISIBLE);
-        } else {
-            mProgressBar.setVisibility(View.GONE);
-        }
+
+        File thumbnailFolderFile = this.getThumbnailFolderFile();
+        mProgressBar.setVisibility(
+                thumbnailFolderFile == null || !thumbnailFolderFile.exists()
+                        ? View.VISIBLE
+                        : View.GONE);
 
         rl_done = (RelativeLayout) findViewById(R.id.rl_done);
         rl_done.setOnClickListener(new View.OnClickListener() {
@@ -154,6 +154,15 @@ public class VideoPickActivity extends BaseActivity {
                 }
             });
         }
+    }
+
+    /**
+     * @return null if there is no external storage available, otherwise a File
+     * instance referencing to the thumbnail file.
+     */
+    private File getThumbnailFolderFile() {
+        File f = getExternalCacheDir();
+        return f == null ? null : new File(f.getAbsolutePath(), THUMBNAIL_PATH);
     }
 
     @Override
