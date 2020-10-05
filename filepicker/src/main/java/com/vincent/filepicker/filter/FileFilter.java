@@ -1,6 +1,7 @@
 package com.vincent.filepicker.filter;
 
-import android.support.v4.app.FragmentActivity;
+import androidx.fragment.app.FragmentActivity;
+import androidx.loader.app.LoaderManager;
 
 import com.vincent.filepicker.filter.callback.FileLoaderCallbacks;
 import com.vincent.filepicker.filter.callback.FilterResultCallback;
@@ -22,23 +23,23 @@ import static com.vincent.filepicker.filter.callback.FileLoaderCallbacks.TYPE_VI
 
 public class FileFilter {
     public static void getImages(FragmentActivity activity, FilterResultCallback<ImageFile> callback){
-        activity.getSupportLoaderManager().initLoader(0, null,
+        LoaderManager.getInstance(activity).initLoader(0, null,
                 new FileLoaderCallbacks(activity, callback, TYPE_IMAGE));
     }
 
     public static void getVideos(FragmentActivity activity, FilterResultCallback<VideoFile> callback){
-        activity.getSupportLoaderManager().initLoader(1, null,
+        LoaderManager.getInstance(activity).initLoader(1, null,
                 new FileLoaderCallbacks(activity, callback, TYPE_VIDEO));
     }
 
     public static void getAudios(FragmentActivity activity, FilterResultCallback<AudioFile> callback){
-        activity.getSupportLoaderManager().initLoader(2, null,
+        LoaderManager.getInstance(activity).initLoader(2, null,
                 new FileLoaderCallbacks(activity, callback, TYPE_AUDIO));
     }
 
     public static void getFiles(FragmentActivity activity,
                                 FilterResultCallback<NormalFile> callback, String[] suffix){
-        activity.getSupportLoaderManager().initLoader(3, null,
+        LoaderManager.getInstance(activity).initLoader(3, null,
                 new FileLoaderCallbacks(activity, callback, TYPE_FILE, suffix));
     }
 }

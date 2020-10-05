@@ -6,7 +6,7 @@
     <include android:id="@+id/tb_pick"
         layout="@layout/vw_layout_top_bar" />
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_audio_pick"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

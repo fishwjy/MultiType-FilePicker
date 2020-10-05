@@ -5,11 +5,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v4.content.FileProvider;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +14,8 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -45,17 +44,21 @@ import static com.vincent.filepicker.Constant.REQUEST_CODE_TAKE_VIDEO;
 public class VideoPickAdapter extends BaseAdapter<VideoFile, VideoPickAdapter.VideoPickViewHolder> {
     private boolean isNeedCamera;
     private int mMaxNumber;
+    private int mMaxVideoDuration = 0;
+    private int mVideoQuality = 1;
     private int mCurrentNumber = 0;
     public String mVideoPath;
 
-    public VideoPickAdapter(Context ctx, boolean needCamera, int max) {
-        this(ctx, new ArrayList<VideoFile>(), needCamera, max);
+    public VideoPickAdapter(Context ctx, boolean needCamera, int max, int duration, int quality) {
+        this(ctx, new ArrayList<VideoFile>(), needCamera, max, duration, quality);
     }
 
-    public VideoPickAdapter(Context ctx, ArrayList<VideoFile> list, boolean needCamera, int max) {
+    public VideoPickAdapter(Context ctx, ArrayList<VideoFile> list, boolean needCamera, int max, int duration, int quality) {
         super(ctx, list);
         isNeedCamera = needCamera;
         mMaxNumber = max;
+        mMaxVideoDuration = duration;
+        mVideoQuality = quality;
     }
 
     @Override
@@ -88,11 +91,14 @@ public class VideoPickAdapter extends BaseAdapter<VideoFile, VideoPickAdapter.Vi
                     mVideoPath = file.getAbsolutePath();
 
                     ContentValues contentValues = new ContentValues(1);
-                    contentValues.put(MediaStore.Images.Media.DATA, mVideoPath);
-                    Uri uri = mContext.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
+                    contentValues.put(MediaStore.Video.Media.DATA, mVideoPath);
+                    Uri uri = mContext.getContentResolver().insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, contentValues);
 
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-                    intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+                    intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, mVideoQuality);
+                    if(mMaxVideoDuration > 0){
+                        intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT , mMaxVideoDuration);
+                    }
                     if (Util.detectIntent(mContext, intent)) {
                         ((Activity) mContext).startActivityForResult(intent, REQUEST_CODE_TAKE_VIDEO);
                     } else {
@@ -115,7 +121,7 @@ public class VideoPickAdapter extends BaseAdapter<VideoFile, VideoPickAdapter.Vi
 
             RequestOptions options = new RequestOptions();
             Glide.with(mContext)
-                    .load(file.getPath())
+                    .load(file.getUri())
                     .apply(options.centerCrop())
                     .transition(withCrossFade())
 //                    .transition(new DrawableTransitionOptions().crossFade(500))
@@ -160,15 +166,8 @@ public class VideoPickAdapter extends BaseAdapter<VideoFile, VideoPickAdapter.Vi
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(Intent.ACTION_VIEW);
-                    Uri uri;
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                        File f = new File(file.getPath());
-                        uri = FileProvider.getUriForFile(mContext, mContext.getApplicationContext().getPackageName() + ".provider", f);
-                    }else{
-                        uri = Uri.parse("file://" + file.getPath());
-                    }
-                    intent.setDataAndType(uri, "video/mp4");
+                    intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    intent.setDataAndType(file.getUri(), "video/mp4");
                     if (Util.detectIntent(mContext, intent)) {
                         mContext.startActivity(intent);
                     } else {
