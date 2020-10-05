@@ -1,5 +1,6 @@
 package com.vincent.filepicker.filter.entity;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -13,6 +14,7 @@ public class BaseFile implements Parcelable {
     private long id;
     private String name;
     private String path;
+    private Uri uri;
     private long size;   //byte
     private String bucketId;  //Directory ID
     private String bucketName;  //Directory Name
@@ -55,6 +57,14 @@ public class BaseFile implements Parcelable {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public Uri getUri() {
+        return uri;
+    }
+
+    public void setUri(Uri uri) {
+        this.uri = uri;
     }
 
     public long getSize() {

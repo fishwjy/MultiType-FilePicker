@@ -1,8 +1,12 @@
 package com.vincent.filepicker.filter.callback;
 
+import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
@@ -134,6 +138,9 @@ public class FileLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor
 
             img.setOrientation(data.getInt(data.getColumnIndexOrThrow(ORIENTATION)));
 
+            Uri uri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, img.getId());
+            img.setUri(uri);
+
             //Create a Directory
             Directory<ImageFile> directory = new Directory<>();
             directory.setId(img.getBucketId());
@@ -174,6 +181,9 @@ public class FileLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor
 
             video.setDuration(data.getLong(data.getColumnIndexOrThrow(DURATION)));
 
+            Uri uri = ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, video.getId());
+            video.setUri(uri);
+
             //Create a Directory
             Directory<VideoFile> directory = new Directory<>();
             directory.setId(video.getBucketId());
@@ -211,6 +221,9 @@ public class FileLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor
             audio.setDate(data.getLong(data.getColumnIndexOrThrow(DATE_ADDED)));
 
             audio.setDuration(data.getLong(data.getColumnIndexOrThrow(DURATION)));
+
+            Uri uri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, audio.getId());
+            audio.setUri(uri);
 
             //Create a Directory
             Directory<AudioFile> directory = new Directory<>();
@@ -250,6 +263,9 @@ public class FileLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor
                 file.setDate(data.getLong(data.getColumnIndexOrThrow(DATE_ADDED)));
 
                 file.setMimeType(data.getString(data.getColumnIndexOrThrow(MIME_TYPE)));
+
+                Uri uri = ContentUris.withAppendedId(MediaStore.Files.getContentUri("external"), file.getId());
+                file.setUri(uri);
 
                 //Create a Directory
                 Directory<NormalFile> directory = new Directory<>();

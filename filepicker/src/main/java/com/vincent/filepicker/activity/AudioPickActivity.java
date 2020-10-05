@@ -43,6 +43,7 @@ public class AudioPickActivity extends BaseActivity {
     private int mMaxNumber;
     private int mMaxSize = 0;
     private int mCurrentNumber = 0;
+    private String selectedDirectory;
     private RecyclerView mRecyclerView;
     private AudioPickAdapter mAdapter;
     private boolean isNeedRecorder;
@@ -132,17 +133,11 @@ public class AudioPickActivity extends BaseActivity {
                     tv_folder.setText(directory.getName());
 
                     if (TextUtils.isEmpty(directory.getPath())) { //All
-                        refreshData(mAll);
+                        selectedDirectory = null;
                     } else {
-                        for (Directory<AudioFile> dir : mAll) {
-                            if (dir.getPath().equals(directory.getPath())) {
-                                List<Directory<AudioFile>> list = new ArrayList<>();
-                                list.add(dir);
-                                refreshData(list);
-                                break;
-                            }
-                        }
+                        selectedDirectory = directory.getPath();
                     }
+                    refreshData();
                 }
             });
         }
@@ -186,12 +181,12 @@ public class AudioPickActivity extends BaseActivity {
                 }
 
                 mAll = directories;
-                refreshData(directories);
+                refreshData();
             }
         });
     }
 
-    private void refreshData(List<Directory<AudioFile>> directories) {
+    private void refreshData() {
         boolean tryToFindTaken = isTakenAutoSelected;
 
         // if auto-select taken file is enabled, make sure requirements are met
@@ -201,7 +196,10 @@ public class AudioPickActivity extends BaseActivity {
         }
 
         List<AudioFile> list = new ArrayList<>();
-        for (Directory<AudioFile> directory : directories) {
+        for (Directory<AudioFile> directory : mAll) {
+            if (selectedDirectory != null && !directory.getPath().equals(selectedDirectory)) {
+                continue;
+            }
             list.addAll(directory.getFiles());
 
             // auto-select taken file?
@@ -216,6 +214,9 @@ public class AudioPickActivity extends BaseActivity {
                 list.get(index).setSelected(true);
             }
         }
+
+        Util.sortFileList(list);
+
         mAdapter.refresh(list);
     }
 

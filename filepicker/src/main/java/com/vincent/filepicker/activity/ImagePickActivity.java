@@ -3,17 +3,19 @@ package com.vincent.filepicker.activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.vincent.filepicker.Constant;
 import com.vincent.filepicker.DividerGridItemDecoration;
 import com.vincent.filepicker.R;
+import com.vincent.filepicker.Util;
 import com.vincent.filepicker.adapter.FolderListAdapter;
 import com.vincent.filepicker.adapter.ImagePickAdapter;
 import com.vincent.filepicker.adapter.OnSelectStateListener;
@@ -41,6 +43,7 @@ public class ImagePickActivity extends BaseActivity {
     public static final int COLUMN_NUMBER = 3;
     private int mMaxNumber;
     private int mCurrentNumber = 0;
+    private String selectedDirectory;
     private RecyclerView mRecyclerView;
     private ImagePickAdapter mAdapter;
     private boolean isNeedCamera;
@@ -128,17 +131,13 @@ public class ImagePickActivity extends BaseActivity {
                     tv_folder.setText(directory.getName());
 
                     if (TextUtils.isEmpty(directory.getPath())) { //All
-                        refreshData(mAll);
+                        selectedDirectory = null;
+                        mAdapter.setSelectedDirectory(null);
                     } else {
-                        for (Directory<ImageFile> dir : mAll) {
-                            if (dir.getPath().equals(directory.getPath())) {
-                                List<Directory<ImageFile>> list = new ArrayList<>();
-                                list.add(dir);
-                                refreshData(list);
-                                break;
-                            }
-                        }
+                        selectedDirectory = directory.getPath();
+                        mAdapter.setSelectedDirectory(directory.getPath());
                     }
+                    refreshData();
                 }
             });
         }
@@ -199,12 +198,12 @@ public class ImagePickActivity extends BaseActivity {
                 }
 
                 mAll = directories;
-                refreshData(directories);
+                refreshData();
             }
         });
     }
 
-    private void refreshData(List<Directory<ImageFile>> directories) {
+    private void refreshData() {
         boolean tryToFindTakenImage = isTakenAutoSelected;
 
         // if auto-select taken image is enabled, make sure requirements are met
@@ -214,7 +213,10 @@ public class ImagePickActivity extends BaseActivity {
         }
 
         List<ImageFile> list = new ArrayList<>();
-        for (Directory<ImageFile> directory : directories) {
+        for (Directory<ImageFile> directory : mAll) {
+            if (selectedDirectory != null && !directory.getPath().equals(selectedDirectory)) {
+                continue;
+            }
             list.addAll(directory.getFiles());
 
             // auto-select taken images?
@@ -229,6 +231,9 @@ public class ImagePickActivity extends BaseActivity {
                 list.get(index).setSelected(true);
             }
         }
+
+        Util.sortFileList(list);
+
         mAdapter.refresh(list);
     }
 
