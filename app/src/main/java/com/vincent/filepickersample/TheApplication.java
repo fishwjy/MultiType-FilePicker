@@ -7,7 +7,6 @@ import android.app.Application;
  * Date: 2017/2/27
  * Time: 14:46
  */
-
 public class TheApplication extends Application {
     @Override
     public void onCreate() {

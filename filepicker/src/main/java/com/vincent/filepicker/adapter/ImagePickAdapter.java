@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +48,7 @@ public class ImagePickAdapter extends BaseAdapter<ImageFile, ImagePickAdapter.Im
     private int mCurrentNumber = 0;
     public String mImagePath;
     public Uri mImageUri;
+    private String selectedDirectory;
 
     public ImagePickAdapter(Context ctx, boolean needCamera, boolean isNeedImagePager, int max) {
         this(ctx, new ArrayList<ImageFile>(), needCamera, isNeedImagePager, max);
@@ -114,7 +115,7 @@ public class ImagePickAdapter extends BaseAdapter<ImageFile, ImagePickAdapter.Im
 
             RequestOptions options = new RequestOptions();
             Glide.with(mContext)
-                    .load(file.getPath())
+                    .load(file.getUri())
                     .apply(options.centerCrop())
                     .transition(withCrossFade())
 //                    .transition(new DrawableTransitionOptions().crossFade(500))
@@ -161,6 +162,7 @@ public class ImagePickAdapter extends BaseAdapter<ImageFile, ImagePickAdapter.Im
                     public void onClick(View v) {
                         Intent intent = new Intent(mContext, ImageBrowserActivity.class);
                         intent.putExtra(Constant.MAX_NUMBER, mMaxNumber);
+                        intent.putExtra(Constant.DIRECTORY, selectedDirectory);
                         intent.putExtra(IMAGE_BROWSER_INIT_INDEX,
                                 isNeedCamera ? holder.getAdapterPosition() - 1 : holder.getAdapterPosition());
                         intent.putParcelableArrayListExtra(IMAGE_BROWSER_SELECTED_LIST, ((ImagePickActivity) mContext).mSelectedList);
@@ -216,6 +218,10 @@ public class ImagePickAdapter extends BaseAdapter<ImageFile, ImagePickAdapter.Im
             mShadow = itemView.findViewById(R.id.shadow);
             mCbx = (ImageView) itemView.findViewById(R.id.cbx);
         }
+    }
+
+    public void setSelectedDirectory(String selectedDirectory) {
+        this.selectedDirectory = selectedDirectory;
     }
 
     public boolean isUpToMax() {

@@ -28,12 +28,15 @@ Please star this library if you like it. :)
 		intent2 = new Intent(this, VideoPickActivity.class);
 		intent2.putExtra(IS_NEED_CAMERA, true);
 		intent2.putExtra(Constant.MAX_NUMBER, 9);
+		intent2.putExtra(Constant.MAX_VIDEO_DURATION, 30); //Optional for setting duration in seconds.
+		intent2.putExtra(Constant.VIDEO_QUALITY, 1); //Optional for setting quality. 0 for low quality & 1 for high quality.
 		startActivityForResult(intent2, Constant.REQUEST_CODE_PICK_VIDEO);
 		break;
 	case R.id.btn_pick_audio:
 		Intent intent3 = new Intent(this, AudioPickActivity.class);
 		intent3.putExtra(IS_NEED_RECORDER, true);
 		intent3.putExtra(Constant.MAX_NUMBER, 9);
+		intent3.putExtra(Constant.MAX_AUDIO_SIZE, 5900); //Optional for setting size of recorded file in bytes. 5900 = ~ 1 second
 		startActivityForResult(intent3, Constant.REQUEST_CODE_PICK_AUDIO);
 		break;
 	case R.id.btn_pick_file:
