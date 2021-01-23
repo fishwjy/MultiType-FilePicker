@@ -235,6 +235,10 @@ public class ImagePickActivity extends BaseActivity {
     private boolean findAndAddTakenImage(List<ImageFile> list) {
         for (ImageFile imageFile : list) {
             if (imageFile.getPath().equals(mAdapter.mImagePath)) {
+                boolean contains = mSelectedList.contains(imageFile);
+                if (contains) {
+                    return true;
+                }
                 mSelectedList.add(imageFile);
                 mCurrentNumber++;
                 mAdapter.setCurrentNumber(mCurrentNumber);
